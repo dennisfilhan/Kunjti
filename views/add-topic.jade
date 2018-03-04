@@ -1,0 +1,25 @@
+extends layout
+
+block content
+	h1= "Add new Topic"
+	form(action="/topics/submit", name="add-estimation", method="post")
+		div.input
+			div.input-group
+				label No
+				input(type='text', name='no', placeholder='').form-control
+			div.input-group
+				label Judul
+				input(type='text', name='judul', placeholder='').form-control
+			div.input-group
+				label File Tes Awal
+				input(type='file', name='tesawal', placeholder='').form-control
+			div.input-group
+				label File Jurnal
+				input(type='file', name='jurnal', placeholder='').form-control
+			div.input-group
+				label File Modul
+				input(type='file', name='modul', placeholder='').form-control
+		div.action
+			div.btn
+				input(type='submit', name='submit').btn.btn-default
+

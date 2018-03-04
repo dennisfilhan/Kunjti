@@ -1,0 +1,232 @@
+extends layout
+
+block styles
+	style.
+		.full{display:block; width:99.8%; margin:0 auto}
+
+
+block content
+	div(id='container')
+	div.row.row-responsive
+		div(style='min-width:120px').column.column-10
+			div 
+				button(data-to='step1').stepButton.button-outline.full Unlock
+				br
+				button(data-to='step2').stepButton.button-outline.full Begin
+				br
+				button(data-to='step3').stepButton.button-outline.full Start
+		div.column.column-90
+			div(id='steps').steps
+				div(id='step1').step
+					div.row.row-responsive
+							div.column.column-33.column-offset-33
+								div
+									h1= title
+									p Baca Instruksi sebagai berikut:
+									ol
+										li Masukkan password
+										li Masukkan Informasi diri
+										li Jawab dengan tenang
+										li Tes Awal mempunyai batas waktu sebanyak 10 menit
+								hr
+								h2 enter password
+								div.row.options
+									fieldset.full
+										input(type='text', name='password', placeholder='ex. KunjtiAA123#$!')
+								hr
+								div.row.actions
+									button(type='submit', name='verifyPassword').full Unlock
+									button(type='submit', data-to='step2').nextButton.full Continue
+
+				form(action='/topics/enrolled', method='post')#enroll
+					div(id='step2').step
+						div.row.row-responsive
+							div.column.column-50.column-offset-25
+								h2 fill your information
+								div.row.options
+									fieldset(id='userdata').full
+										label NIM
+										input(type='text', name='nim', placeholder='ex. 1202150012').full
+										div.fetchbox
+											label Nama Lengkap
+											input(type='text', name='nama', placeholder='ex. Halo Halo').full
+											label Kelas
+											input(type='text', name='kelas', placeholder='ex. SI4000').full
+											label Shift Praktikum
+											input(type='text', name='shift', placeholder='ex. 8').full
+								hr
+								div.actions
+									div
+										p
+											button(type='button', name='verifyUser').full Verify User
+											button(type='button', data-to='step3').nextButton.full#startNow Continue
+										p(style='padding:12px;text-align:center;').infotext
+											a(href='javascript:;')#helpme nim belum terdaftar?
+
+					div(id='step3',style='padding:5px 40px;').step
+						h1= title
+						div.row.row-responsive
+							div(id='document-box').column
+								iframe(src="/topics/docx/"+srcpath, frameborder='0', width='100%', height='400px')
+							div(id='option-box').column.column-33
+								div.infobar
+									h4(align='center') 
+										| Time Limit 
+										span#countdown 10 
+									div.options
+										fieldset(id='useranswer')
+											- var group_max = 10
+											- var item_max = 4
+											- var index = ['A','B','C','D','E']
+											- for(x=0;x<group_max;x++)
+												div(id= 'answer-group-'+x).parent-radio
+													label= 'Answer '+(x+1)
+													div.row.grouping-radio
+														- for(y=0;y<item_max;y++)
+															div(style="border:1px solid #dcdcdc;margin:8px;text-align:center;padding:6px;max-height:42px;border-radius:5px;").child-radio.column
+																label(style="cursor:pointer;")= index[y]
+																	input(type='radio', name= 'answer['+x+']', value= index[y], title= index[y], style='display:none;', class='pretty-radio')
+									hr
+									div.actions.row
+										button(type='submit', onclick='return confirm("Finish now?");').button-large.column.column-100 Selesai
+
+	script(type='text/javascript', src='/javascripts/easytimer.min.js')
+	script.
+		$(document).ready(function(e){
+			$('#document-box>iframe').height($('#option-box').height()-40);
+			step('steps');
+
+			checkPassword();
+			checkUser();
+		});
+
+		$('input[type=radio].pretty-radio').change(function(e){
+			var rparent = $(this).parents('div.child-radio');
+			var rrparent = $(this).parents('div.grouping-radio');
+			rrparent.find('div.child-radio').css({'background-color':'#fff', 'color':'#545454'});
+			//rrparent.find('div.child-radio').removeClass('radio-selected');
+			//if($(this).is(':checked')) {
+				//console.log($(this).attr('name')+'-'+$(this).val()+' checked true'); 
+				rparent.css({'background-color':'#9b4dca', 'color':'#fff'});
+				//rparent.addClass('radio-selected');
+			//}
+		});
+
+		function step(parentName){
+			var parent = $('#'+parentName);
+			var child1 = parent.find('#step1');
+				$('.stepButton').attr('disabled','disabled');
+				var button1 = $('.stepButton[data-to=step1]');
+				button1.removeClass('button-outline').attr('disabled',false);
+			var childs = parent.find('.step');
+			childs.hide();
+			child1.fadeIn();
+
+			$(childs.find('.nextButton')).click(function(e){
+				var targetName = $(this).data('to');
+				var target = $('#'+targetName);
+				var parent = $(this).parents('.step');
+				target.fadeIn();
+				parent.hide();
+
+				var ele = $('.stepButton');
+				ele.addClass('button-outline');
+				var parentId = parent.attr('id');
+				child1.remove();
+				button1.attr('disabled',true);
+				$('.stepButton[data-to='+targetName+']').removeClass('button-outline').attr('disabled',false);
+			});
+
+			$('.stepButton').click(function(e){
+				var ele = $('.stepButton');
+				ele.addClass('button-outline');
+				$(this).removeClass('button-outline');
+				var targetName = $(this).data('to');
+				var target = $('#'+targetName);
+				//console.log(targetName);
+				childs.hide();
+				target.fadeIn();
+			});
+		}
+
+		function checkPassword(){
+			var esubmit = $('[name="verifyPassword"]');
+			var econtinue = esubmit.next('.nextButton');
+			var epassword = $('input[name=password]');
+			var t = 'Unlock';
+			econtinue.hide();
+			esubmit.click(function(e){
+				esubmit.text('Checking ...');
+				$.post('/topics/1/unlock', {password: epassword.val()})
+					.done(function(data){
+						esubmit.text('Success');
+						esubmit.remove(); econtinue.fadeIn();
+					})
+					.fail(function(data){
+						esubmit.text('Wrong Password').attr('disabled',true);
+						setTimeout(function(){esubmit.text(t).attr('disabled',false);},3000);
+					});
+			});
+		}
+
+
+		function checkUser(){
+			var esubmit = $('[name="verifyUser"]');
+			var ehelp = $('#helpme');
+			var econtinue = esubmit.next('.nextButton');
+			var enim= $('input[name=nim]');
+			var fieldset = $('.fetchbox');
+			var t = 'Verify You';
+			econtinue.hide();
+			ehelp.hide();
+			fieldset.slideUp();
+			esubmit.click(function(e){
+				esubmit.text('Verifying '+enim.val()+'...');
+				ehelp.hide();
+				$.post('/topics/1/userdata', {nim: enim.val()})
+					.done(function(data){
+						fieldset.slideDown();
+						//nama, kelas, shift
+						enim.val(data.nim).attr('readonly',true);
+						$('input[name=nama]').val(data.fullname);
+						$('input[name=kelas]').val(data.kelas);
+						$('input[name=shift]').val(data.shift);
+						console.log(data);
+						esubmit.text('Success'); esubmit.remove(); econtinue.fadeIn();
+					})
+					.fail(function(data){
+						esubmit.text('NIM '+enim.val()+' not found').attr('readonly',true);
+						ehelp.fadeIn();
+						setTimeout(function(){esubmit.text(t).attr('disabled',false);},3000);
+					});
+			});
+
+			ehelp.click(function(e){
+				fieldset.slideDown();
+				ehelp.hide();
+				esubmit.remove(); econtinue.fadeIn();
+			});
+		}
+
+
+
+		function autoSubmit(){
+			var form = $('#enroll');
+			setTimeout(function(){
+				enroll.submit();
+			},5000);
+		}
+		$('#startNow').click(function(e){
+			//autoSubmit();
+			$(this).hide();
+			console.log('start');
+			var timer = new Timer();
+			timer.start({countdown: true, startValues: {minutes: 1}});
+			$('#countdown').html(timer.getTimeValues().toString());
+			timer.addEventListener('secondsUpdated', function (e) {
+			    $('#countdown').html(timer.getTimeValues().toString());
+			});
+			timer.addEventListener('targetAchieved', function (e) {
+			   autoSubmit();
+			});
+		});
