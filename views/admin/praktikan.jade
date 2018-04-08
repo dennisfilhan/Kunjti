@@ -1,0 +1,118 @@
+extends layout
+
+block title
+	| Praktikan &mdash; Admin
+
+block content
+	.row
+		.span3
+			.widget.widget-nopad
+				.widget-header
+					i.icon-cog
+					h3  Pilih Praktikum
+				.widget-content
+					form#praktikum.form-vertical(style='padding:10px 15px 2px 15px; margin:0;', action='',method='')
+						.control-group
+							.controls
+								select(name='filter-by', onchange='location.href=this.value').span2
+									option(value='') -- Select --
+									- for(var i=0; i<10; i++)
+										option(value='/admin/praktikan/praktikum-'+i)= i
+			.widget.widget-nopad
+				.widget-header
+					i.icon-filter
+					h3  Filter
+				.widget-content
+					form#filter.form-vertical(style='padding:15px;', action='',method='')
+						fieldset
+							.control-group
+								.controls
+								input#jumlah-modul.form-control.span2(type='text', value='', placeholder='e.g 1202150001')
+
+							.control-group
+								.controls
+									select(name='filter-by').span2
+										option(value='') Default
+										option(value='nim') NIM
+										option(value='nama') Nama
+										option(value='asisten') Asisten
+										option(value='modul') Modul
+							button.btn.btn-primary.span2.pull-right
+								i.icon-search
+								span(style='display:inline-block; width:10px;')
+								| Cari
+			.widget.widget-nopad
+				.widget-header
+					i.icon-info-sign
+					h3  Information
+				.widget-content
+					#big_stats.cf
+						.stat
+							i.icon-user
+							span.value 851
+							span.value(style='font-size:250%;')
+								| / 
+								| 867
+
+		.span9
+			.widget.widget-nopad
+				.widget-header
+					i.icon-list-alt
+					h3  Modul
+				.widget-content
+					// p 
+					table.table.table-striped.table-hover
+						thead
+							tr
+								th NO.
+								th Modul
+								th Komponen
+								th Asisten PJ
+								th Jumlah Praktikan
+								th Jumlah Kehadiran
+								th .
+						tbody
+							- for(var i=1; i<6; i++)
+								tr
+									td= i
+									td Introduction of Data
+									td 3
+									td DNN
+									td 657
+									td 433
+									td.td-actions
+										a.btn.btn-small.btn-default(href='modul-'+i)
+											i.btn-icon-only.icon-search
+
+			.widget.widget-nopad
+				.widget-header
+					i.icon-list-alt
+					h3  
+						| Daftar Praktikan
+					span.span3.pull-right
+						button.btn.btn-warning(style='margin-left:20%;')
+							i.icon-upload-alt 
+							span(style='display:inline-block; width:20px;')
+							| Online Synchronize
+				.widget-content
+					// p 
+					table.table.table-striped.table-hover
+						thead
+							tr
+								th NO.
+								th Praktikum
+								th NIM
+								th Nama
+								th Kelas
+								th Shift
+								th Status
+						tbody
+							- for(var i=1; i<100; i++)
+								tr
+									td= i
+									td Basis Data
+									td 1202150079
+									td John Doe
+									td SI4006
+									td 3
+									td Hadir

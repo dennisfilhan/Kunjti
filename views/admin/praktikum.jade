@@ -1,0 +1,99 @@
+extends layout
+
+block title
+	| Praktikum &mdash; Admin
+
+block content
+	.row
+		.span6
+			.widget.widget-nopad
+				.widget-header
+					i.icon-info-sign
+					h3  Information
+				.widget-content
+					.widget.big-stats-container
+						.widget-content
+							//| Table
+			.widget.widget-nopad
+				.widget-header
+					i.icon-list-alt
+					h3  Daftar Praktikum
+				.widget-content
+					.widget-content(style='padding:10px;')
+						table.table.table-striped.table-bordered
+							thead
+								tr
+									th Nama
+									th Modul
+									th Praktikan
+									th Asisten
+									th 
+								tbody
+									- if(data[0].Praktikums.length > 0)
+										- each praktikum, i in data[0].Praktikums
+											tr
+												td= praktikum.nama
+												td= Object.keys(praktikum.Moduls).length
+												td 0
+												td 0
+												td.td-actions(style='text-align:center;')
+													a.btn.btn-small.btn-success(href='/admin/praktikum/'+praktikum.id)
+														i.btn-icon-only.icon-pencil
+													span(style='display:inline-block; width:20px;')
+													a.btn.btn-danger.btn-small(href='/admin/praktikum/'+praktikum.id+'/delete')
+														i.btn-icon-only.icon-remove
+									- else
+										tr
+											td(colspan=5, style='text-align:center;') No Row Exist.
+
+		.span6
+			.widget.widget-nopad
+				.widget-header
+					i.icon-plus-sign
+					h3  Tambah Praktikum Baru
+				.widget-content
+					form#add-praktikum.form-horizontal(style='padding:15px;', method='POST', action='/admin/praktikum/save')
+						fieldset
+							.control-group
+								label.control-label(for='lab') Lab
+								.controls
+									input.span3#lab.disabled(name='lab', type='text', value= data[0].id, title=data[0].nama, placeholder='', readonly='readonly')
+									//p.help-block Your username is for logging in and cannot be changed.
+							.control-group
+								label.control-label(for='nama') Nama Praktikum
+								.controls
+									input.span3#nama(name='nama', type='text', value='Basis Data', placeholder='')
+							.control-group
+								label.control-label(for='periode-from') Periode
+								.controls
+									select.span1#periode-from(name='periode')
+										option(value='') -- From --
+										- for (var i = 2020; i >= 1990; i--)
+											option(value= i)= i
+									span(style='display:inline-block; width:20px; text-align:center;') -
+									select.span1#periode-to(name='periode')
+										option(value='') -- To --
+										- for (var i = 2020; i >= 1990; i--)
+											option(value= i)= i
+							.control-group
+								label.control-label(for='for-angkatan') Angkatan
+								.controls
+									select.span1#for-angkatan(name='angkatan')
+										option(value='') -- Tahun --
+										- for (var i = 2030; i >= 2010; i--)
+											option(value= i)= i
+							.control-group
+								label.control-label(for='jumlah-modul') Jumlah Modul
+								.controls
+									input.span3#jumlah-modul(name='jumlah_modul', type='number', value='5', placeholder='')
+							.control-group
+								label.control-label(for='decription') Deskripsi
+								.controls
+									textarea.span3#decription(name='description', placeholder='', rows=9) Example of Description
+
+
+							br
+							.form-actions
+								button.btn.btn-primary(type='submit') Simpan 
+								span(style='display:inline-block; width:20px;')
+								button.btn Batal

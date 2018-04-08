@@ -1,0 +1,44 @@
+extends layout
+block name 
+	| Quiz
+block content
+	- var cName = 'units['+(id)+']';
+	- var sample = 'Sample Quiz Input '+id;
+	//- .control-group
+	//- 	label.control-label(for='modul-id-quiz-') Modul
+	//- 	.controls
+	//- 		input.disabled(id='modul-id-quiz-', name= cName+'.modul', type='text', value='1', placeholder='')
+	//- 		//p.help-block Your username is for logging in and cannot be changed.
+	.control-group
+		label.control-label(for='') Nama
+		.controls
+			input(name= cName+'[unit_type]', type='hidden', value='QUIZ')
+			input(name= cName+'[name]', type='text', value= sample, placeholder='Nama Quiz ')
+	.control-group
+		label.control-label(for='') Passkey
+		.controls
+			input(name= cName+'[passkey]', type='text', value= sample, placeholder='Password Quiz')
+	.control-group
+		label.control-label(for='') Jumlah Soal
+		.controls
+			input(name= cName+'[jumlah_soal]', type='number', value= sample, placeholder='')
+	.control-group
+		label.control-label(for='') Time Limit
+		.controls
+			input(name= cName+'[timelimit]', type='text', value= sample, placeholder='')
+	.control-group
+		label.control-label(for='') Type
+		.controls
+			select(name= cName+'[type]', readonly='readonly')
+				option(value='') -- Select --
+				- var types = ['Attachment', 'Pages'];
+				- for type in types
+					option(value= type, selected= (type=='Attachment'?true:false))= type
+	.control-group
+		label.control-label(for='') Answer Key
+		.controls
+			input(name= cName+'[answerkey]', type='text', value= sample, placeholder='Jawaban Quiz')
+	.control-group
+		label.control-label(for='') Attachment
+		.controls
+			input(name= cName+'[file]', type='file')

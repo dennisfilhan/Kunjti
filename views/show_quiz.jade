@@ -1,0 +1,315 @@
+extends layout_v2
+
+block title
+	= quiz.Quiz.nama
+	| &nbsp;&middot;&nbsp;
+	= quiz.Modul.nama
+
+block styles
+	style.
+		.multiplebox{padding:5px 15px; border-radius:5px;}
+		.multiplebox:hover{background-color:#eee;}
+			.option-number{display:inline-block; margin:0 auto; width:30px; height:30px; border-radius:50%; background-color:#fefefe; line-height:2;}
+				.radio-pretty{}
+					.radio-label{width:50px;height:50px; display:inline-block; background-color:#f5f5f5; line-height:2.8; border-radius:50%; cursor:pointer; border:2px solid #f6f6f6;}
+					.radio-label:hover{border-color:#9b4dca;}
+					.radio-pretty .active{background-color:#9b4dca; color:#f5f5f5;}
+					.radio-option{}
+		.backToSection{position:fixed; top:5%; left:10px; z-index:100; display:display-block; background-color:#fefefe; padding:8px 15px; border:2px solid #eee; opacity:0.5;}
+		.backToSection:hover{opacity:1;}
+
+
+block content
+	.container
+
+		a#backToSection.backToSection(href='javascript:;', style='display:none;', title='Edit Informasi')
+			i.icon-arrow-up
+			| &nbsp;Kembali
+
+		form(action='', method='post')
+		section#nav.row(style='padding:10px 0;')
+			.column.column-100
+				a(href='/') Depan
+				| &nbsp;&frasl;&nbsp;
+				span
+					= quiz.Modul.nama
+				| &nbsp;&frasl;&nbsp;
+				span
+					= quiz.Quiz.nama
+		.row(style='margin-top:4%;')
+			.column
+				//- i.icon-tasks
+			.column.column-80
+				section#intro(style='height:80vh;')
+					.row
+						//- .column.column-120
+						h1.column.column-50
+							= quiz.Quiz.nama
+						.column.column-70(style='text-align:right; font-size:80%;')
+							//- Lab
+							=quiz.Modul.Praktikum.Lab.nama 
+							| &nbsp;&middot;&nbsp;
+							=quiz.Modul.Praktikum.Lab.nickname
+							br
+							//- Praktikum
+							=quiz.Modul.Praktikum.nama
+							br
+							//- Modul
+							=quiz.Modul.nama
+					p= quiz.description
+					p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lacus eros, pellentesque nec lectus eget, consectetur gravida turpis. Proin quis fringilla justo. Pellentesque commodo elit sit amet diam finibus, viverra elementum turpis posuere. Mauris eu tristique dui, sit amet gravida est. Proin lacus erat, auctor ut faucibus quis	
+					hr
+					.row#passkey
+						.column
+						.column.column-60(style='text-align:center;')
+							#aturan
+								//- h1 Aturan Main
+								//- p dibacaya
+							form#unlockForm(action='/unit/unlock/'+quiz.id, method='POST')
+								h1 Unlock Me
+								.row
+									input(type='text', name='password', placeholder='Enter password here')
+									&nbsp;
+									button(type='submit') Unlock
+								img#preloader1(src='/imgs/loading2.gif', style='display:none; width:60px;')
+							.row#afterUnlock(style='display:none; text-align:center; margin-top:8%;')
+								.column.column-100
+									p
+										i.icon-unlock
+										| &nbsp; You've Unlocked Me! Please Continue to 
+										u
+											| Next Section.
+						.column
+
+				section.row#user(style='height:95vh; padding:5% 0; display:none;')
+					.column
+					.column.column-50(style='text-align:center;')
+						h1 Fill Your Information
+						form#fill(action='',method='POST')
+							fieldset(style='text-align:left;')
+								label NIM
+									input(name='inim', value='12', type='text', placeholder='')
+								.hidden-field(style='display:none;')
+									label Nama
+										input(name='inama', value='F', type='text', placeholder='')
+									label Kelas
+										input(name='ikelas', value='S', type='text', placeholder='')
+									label Shift
+										input(name='ishift', value='S', type='text', placeholder='')
+									label Posisi
+										input(name='ipos', value='P', type='text', placeholder='')
+								.row
+									.column.column-70
+										button#verify(style='width:98%;', type='button') Verify
+										button#start(style='width:98%;display:none;', type='submit') Start
+									.column.column-50
+										i.icon-time
+										| &nbsp;&nbsp;Time Limit&nbsp;
+										= (quiz.Quiz.timelimit/60/1000)
+										| &nbsp;Minutes
+					.column
+			.column
+
+		section.row#workbench(style='height:95vh;display:none;')
+			.column.column-75
+				#document
+					//- iframe#frame(src='/unit/docx/'+quiz.Attachment.filename, frameborder='0', width='100%', style='height:100vh; min-height:380px;')
+			.column.column-25(style='text-align:left;')
+				form#answerform(action='/unit/enrolled', method='POST')
+					fieldset
+						p(style='text-align:center;font-size:75%;margin:8px 4px;')
+							a.icon-ok-circle
+							| &nbsp;
+							span#snama Filhan Dennis
+							| &nbsp;&frasl;&nbsp;
+							span#snim 1202150079
+							| &nbsp;&frasl;&nbsp;
+							span#skelas SI3907
+							| &nbsp;&frasl;&nbsp;Shift&nbsp;
+							span#sshift 7
+						input(type='hidden', name='unitid', value= quiz.id)
+						input(type='hidden', name='nim', value='')
+						input(type='hidden', name='nama', value='')
+						input(type='hidden', name='kelas', value='')
+						input(type='hidden', name='shift', value='')
+						input(type='hidden', name='pos', value='')
+						div#multiplebox(style='text-align:center;')
+						- var qMax=quiz.Quiz.jumlah_soal;
+						- for(i=0; i<qMax; i++)
+							.multiplebox(style='text-align:center;')
+								.row
+									.column.column-10.option-number= (i+1)
+									input(style='display:none', type='radio', name='choices['+i+']', checked='checked',value='')
+									- var choices = ['a','b','c','d','e'];
+									- for(c=0; c<choices.length-1; c++)
+										.column
+											.radio-pretty
+												label
+													span.radio-label(style='')
+														= choices[c].toUpperCase()
+													input.radio-option(style='display:none;', type='radio', name='choices['+i+']', value= choices[c])
+					
+					.row
+						.column.column-40
+							button#btnFinish(type='submit') Finish
+						.column.column-60(style='text-align:right;')
+							span(style='font-size:22px;')
+								i.icon-time
+								| &nbsp;
+								span#countdown_timer 00:00:00
+								input(type='hidden', id='seconds', value= ((quiz.Quiz.timelimit/1000)) )
+
+block scripts
+	script(type='text/javascript', src='/javascripts/easytimer.min.js')
+
+	script.
+		$(document).ready(()=>{
+			inits();
+		}
+		);
+
+		function inits(){
+
+		var passBlock = $('#passkey');
+		
+		var frame = $('#document');
+		var unlock = $('#unlockForm');
+		var afterUnlock = $('#afterUnlock');
+		var txtUnlock = $('input[name=password]');
+		var preloader1=$('#preloader1');
+		console.log(unlock.attr('action'));
+		var userBlock=$('#user');
+		unlock.bind('submit', (e)=>{
+			e.preventDefault();
+			preloader1.show();
+			$.post(unlock.attr('action'), {password: txtUnlock.val()}, (result,stat,type)=>{
+				console.log(result);
+				preloader1.hide();
+				return result;
+			})
+			.done((d)=>{
+				unlock.hide();
+				afterUnlock.fadeIn();
+				userBlock.show();
+				scrollToE(userBlock);
+				frame.html(d);
+				console.log(d);
+			})
+			.fail((f)=>{
+				preloader1.hide();
+				swal({title: 'Password Salah', button:false, text:' ', icon:'error'});
+			})
+			;
+		});
+
+		var rowChoice = $('.multiplebox');
+		var radioChoiceBtn = $('.radio-option');
+			radioChoiceBtn.bind('change', (e)=>{
+				e.preventDefault();
+				var r = $(e.target);
+				r.parents('.multiplebox').find('.radio-label').removeClass('active');
+				r.parents('.radio-pretty').find('.radio-label').addClass('active');
+			});
+		
+			$('#verify').bind('click',(e)=>{
+				e.preventDefault();
+				$(e.target).fadeOut(1000, ()=>{
+					$('input[name=inim]').attr('readonly', true);
+					$('.hidden-field').slideDown(1000);
+					$('#start').fadeIn();
+				});
+				//console.log('user info set');
+			});
+
+			var answerform = $('#answerform');
+			$('#btnFinish').on('click',(e)=>{
+				e.preventDefault();
+				swal({
+					title: 'Selesaikan sekarang?', 
+					text: ' ',
+					icon: 'warning', 
+					buttons: ['Not Now', 'Continue']
+					})
+					.then((val)=>{
+						if(val!=null){
+							answerform.submit();
+						}
+					});
+			});
+
+			var workbench =$('#workbench');
+			$('#start').bind('click',(e)=>{
+				e.preventDefault();
+				fillA();
+				workbench.show();
+				workbench.height(answerform.height());
+				//- console.log(workbench.height());
+				$('#start').text('Update');
+				scrollToE(workbench);
+				timerStart();
+				setTimeout(()=>{
+					makeToggle()
+				},2000);
+			});
+
+			var btnBackToSection = $('#backToSection');
+			btnBackToSection.on('click', (e)=>{
+				e.preventDefault();
+				if(workbench.is(':visible')){
+					scrollToE(userBlock);
+					workbench.toggle();
+					makeToggle();
+				}
+			});
+
+		function makeToggle(){
+			passBlock.toggle();
+			userBlock.toggle();
+			btnBackToSection.toggle();
+		}
+		
+		function timerStart(){
+			var ele = $('#countdown_timer');
+			var timer = new Timer();
+			var time=parseInt($('#seconds').val());
+			timer.start({countdown: true, startValues: {seconds: time}});
+			ele.html(timer.getTimeValues().toString());
+			timer.addEventListener('secondsUpdated', function (e) {
+			    ele.html(timer.getTimeValues().toString());
+			});
+			timer.addEventListener('targetAchieved', function (e) {
+			   autoSubmit();
+			});
+		}
+
+		function autoSubmit(){
+			var ele = answerform;
+			setTimeout(function(){
+				ele.submit();
+			},5000);
+		}
+
+		
+		
+		function scrollToE(eleTarget){
+			$('html, body').animate({
+				    scrollTop: (eleTarget.offset().top)
+			},500);
+		}
+		function fillA(){
+			$('input[name=nim]').val($('input[name=inim]').val());
+			$('input[name=nama]').val($('input[name=inama]').val());
+			$('input[name=kelas]').val($('input[name=ikelas]').val());
+			$('input[name=shift]').val($('input[name=ishift]').val());
+			$('input[name=pos]').val($('input[name=ipos]').val());
+
+			$('#snama').text($('input[name=inim]').val());
+			$('#snim').text($('input[name=inama]').val());
+			$('#skelas').text($('input[name=ikelas]').val());
+			$('#sshift').text($('input[name=ishift]').val());
+			//- $('#sipos').val($('input[name=ipos]').val());
+		}
+		}
+		
+
+

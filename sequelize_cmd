@@ -1,0 +1,11 @@
+sequelize model:create --name Praktikan --attributes nim:string,nama:string,kelas:string
+sequelize model:create --name Shift --attributes alias:string,location:string,time_in:integer,time_out:integer,praktikumId:integer
+sequelize model:create --name Asisten --attributes fullname:string,codename:string,labId:integer
+sequelize model:create --name Asisten_Praktikum_Assign --attributes asistenId:integer,praktikumId:integer
+sequelize model:create --name Praktikan_Shift_Assign --attributes praktikanId:integer,shiftId:integer
+sequelize model:create --name Praktikan_Unit_Assign --attributes unitId:integer,praktikan_on_shift:integer
+sequelize model:create --name Nilai --attributes praktikanId:integer,praktikanUnitId:integer,score:integer,asistenId:integer
+
+//NEXT
+sequelize model:create --name User --attributes 
+sequelize model:create --name Kelas --attributes 

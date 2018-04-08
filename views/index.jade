@@ -1,5 +1,187 @@
-extends layout
-
+extends layout_v2
+block title
+	=title
+block styles
+	style.
+		.highlight{background: #9b4dca; color:#f5f5f5; padding:2px 8px; border-radius:2px;}
+		.highlight:focus{color:#f5f5f5;}
+		#top{border-radius:50%; width:50px; height:50px; padding:5px; position:fixed; bottom:10px; left:48%; right:auto; display:none;}
 block content
-  h1= title
-  p Welcome to #{title}
+	.container
+		button.button.button-outline#top
+			i.icon.icon-angle-up(style='font-size:250%;')
+		.row(style='height:97vh;')
+			.column
+			.column.column-60(style='padding:5% 2%; text-align:center;')
+				img#logo(src='/imgs/logo-ead-crop.png', height='250px;', style='z-index:-5;')
+				h3(style='background-color:#fff;') &mdash; APPLICATION &mdash;
+				.row
+					.lab-list.column.column-120(style='text-align:center;padding:0 10px 10px;')
+						- each lab, l in labs
+							a(href='/lab/'+lab.id, data-lab='')
+								= lab.nickname
+							- if(l!=labs.length-1)
+								| &nbsp;&frasl;&nbsp;
+				.row
+					.praktikum-list.column.column-120(style='text-align:center;')
+						//- a.praktikum(href='nothing') test
+						#praktikums
+						img(id='loader', src='/imgs/loading1.gif', style='display:none; width:50px; margin:10px auto;')
+			.column
+
+		//- Section 2 
+		.row
+			.column.column-120
+				#moduls(style='display:none;height:88vh;')
+					h1 Title
+					table
+						thead
+							tr
+								th(width='10%', style="text-align:center;") No. Modul
+								th(width='45%', style="text-align:center;") Nama
+								th(style="text-align:center;") 
+									i.icon-cogs
+						tbody
+				.loader(style='text-align:center;')
+					img(id='loader2', src='/imgs/loading1.gif', style='display:none; width:50px; margin:10px auto;')
+
+
+block scripts
+	script(type='text/javascript').
+
+		$('a').click(function(e){
+			e.preventDefault();
+		});
+
+		$(document).ready((e)=>{
+			inits();
+		});
+
+		function inits(){
+
+			animLogo();
+			function animLogo(){
+				setInterval(function(){
+					$('#logo').toggleClass('animated rubberBand');
+					console.log('anim logo.');
+				}, 5000);
+			}
+
+			var praktikumsByLab = {};
+
+			var backTop = $('#top');
+			//- 
+			//- LAB Link Click Action
+			//- 
+			var praktikumSection=$('#praktikums')
+				,btnLab =$('a[data-lab]');
+			btnLab.bind('click',(e)=>{
+				e.preventDefault();
+				var targetURL = $(e.target).attr('href');
+				var id = $(e.target).attr('href').split('/')[2];
+				btnLab.removeClass('highlight');
+				$(e.target).addClass('highlight');
+				var t = praktikumSection;
+				//- console.log(targetURL);
+				//- console.log(id);
+				var loading = $('#loader');
+
+				t.hide();
+				loading.show();
+				$.post(targetURL,{lab: id},(result)=>{
+					//- console.log(result);
+					loading.hide();
+					return result;
+				}).done((e)=>{
+					if(e==null || (e.length)==0){t.fadeIn().html('Praktikum Belum Tersedia'); return;}
+					this.praktikumsByLab = e;
+					var ele = '<ol style="list-style:none;">';
+					e.forEach((el,i)=>{
+						ele +='<li><a class="button button-outline" data-praktikum="" href="/praktikum/'+el.id+'">'+el.nama+'</a></li>';
+					});
+					ele+='</ol>';
+					t.html(ele).fadeIn();
+
+					//- console.log(this.praktikumsByLab);
+					return praktikumsByLab;
+				});
+
+			});
+
+				//- console.log(this.praktikumsByLab);
+			//- 
+			//- Praktikum Link Click Action
+			//- 
+			var modulSection = $('#moduls')
+				,btnPraktikum = $('a[data-praktikum]')
+				,praktikumTitle = modulSection.find('h1')
+				,modulTableContent= modulSection.find('tbody')
+				,loader2=$('#loader2');
+
+			praktikumSection.on('click', 'a[data-praktikum]', (e)=>{
+				e.preventDefault();
+				loader2.show();
+				modulSection.hide();
+				var targetURL = $(e.target).attr('href');
+				var id = $(e.target).attr('href').split('/')[2];
+
+				$.post(targetURL, {praktikum: id}, (result)=>{
+					return result;
+				}).done((d)=>{
+					if(d==null || d.length<1){
+						loader2.hide(); 
+						swal({icon: "warning", title: 'Modul Belum Tersedia', text: ' ', button:false, timer: 1000});
+						return;
+					}
+					var tbody='';
+					d.forEach((el,i)=>{
+						var modul=el;
+						var tr='<tr>', btn='';
+						tr+='<td style="text-align:center;">'+modul.nomor+'</td>';
+						tr+='<td>'+modul.nama+'</td>';
+						if((modul.Units).length<1 || (modul.Units)==null){btn+='<span class=""><i class="icon icon-exclamation-sign"></i>&nbsp;Unit Belum Ada</span>';}else{
+							(modul.Units).forEach((eu, i)=>{
+								if(eu.type=='DOCUMENT'){
+									btn+='<a class="" target="_blank" href="/unit/show/'+eu.id+'"><i class="icon icon-book"></i>&nbsp;'+eu.Document.nama+'</a>';
+								}else{
+									btn+='<a class="" target="_blank" href="/unit/show/'+eu.id+'"><i class="icon icon-leaf"></i>&nbsp;'+eu.Quiz.nama+'</a>';
+								}
+								if(i<(modul.Units).length-1){btn +=' &mdash; ';}
+							});
+						}
+						tr+='<td style="text-align:center;">'+btn+'</td>';
+						tr+='</tr>';
+						tbody+=tr;
+					});
+					praktikumTitle.html($(e.target).text());
+					modulTableContent.html(tbody);
+					modulSection.fadeIn();
+					loader2.hide();
+					$('html, body').animate({
+					    scrollTop: (modulSection.offset().top)
+					},500);
+					backTop.fadeIn(500);
+					console.log(d);
+				});
+				//- console.log(id);
+
+				backToTop();
+				function backToTop(){
+					function toTop(){
+						var scroll = $(window).scrollTop();
+						console.log(scroll+' - '+$('body, html').offset().top);
+						if(scroll>($('body, html').offset().top)){
+							$('html, body').animate({
+							    scrollTop: ($('body, html').offset().top)
+							},500);
+						}
+					}
+					$(window).scroll(()=>{
+					//- console.log($(window).scrollTop());
+						if($(window).scrollTop()<80){$('#top').hide();}else{$('#top').fadeIn(500);}
+					});
+					$('#top').on('click', (e)=>{console.log('clicktpo'); toTop();});
+				}
+			});
+			
+		}

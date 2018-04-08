@@ -1,0 +1,24 @@
+doctype html
+html
+	head
+		meta(charset='utf-8')
+		title 
+			block title
+		meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
+		meta(name='apple-mobile-web-app-capable', content='yes')
+		link(href='/stylesheets/milligram.min.css', rel='stylesheet')
+		link(href='/stylesheets/animate.min.css', rel='stylesheet')
+		//- link(href='/stylesheets/bootstrap-responsive.min.css', rel='stylesheet')
+		//- link(href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600', rel='stylesheet')
+		link(href='/admin/css/font-awesome.css', rel='stylesheet')
+
+		script(type='text/javascript', src='/javascripts/jquery.min.js')
+
+		block styles
+	body
+		block content
+
+	script(type='text/javascript', src='/javascripts/sweetalert.min.js')
+	//- script(type='text/javascript', src='/javascripts/anijs-min.js')
+	//- script(type='text/javascript', src='/javascripts/anijs-jquery-event-system-min.js')
+	block scripts

@@ -1,0 +1,79 @@
+extends layout_v2
+
+block title
+	= document.Document.nama
+	| &nbsp;&middot;&nbsp;
+	= document.Modul.nama
+
+block content
+	.container
+		.row(style='padding:10px 0;')
+			.column.column-120
+				a(href='/') Depan
+				| &nbsp;&frasl;&nbsp;
+				span
+					= document.Modul.nama
+				| &nbsp;&frasl;&nbsp;
+				span
+					= document.Document.nama
+
+		.row(style='margin-top:4%;')
+			.column
+			.column.column-80
+				h1= document.Document.nama
+				p= ((document.Document.description)==null?'No Description':(document.Document.description))
+				//- p Description Text
+
+				- if(document.passkey.length>0)
+					form#form(action='/unit/unlock/'+document.id, method='post')
+						.row#intro-actions(style='')
+							input#id(type='hidden', value= document.id)
+							input#txtPassword.column.column-40(type='text', name='passkey', placeholder='Enter the Passkey') 
+							| &nbsp;
+							button(type='submit').column.column-20#btnPassword
+								| Click to Open
+							.column(style='text-align:center;')
+								img#preloader(src='/imgs/loading2.gif', style='display:none; width:40px;')
+				
+
+				- if(!(document.passkey.length>0))
+					.row#document
+						iframe#frame(src='/unit/docx/'+document.Attachment.filename, frameborder='0', width='100%', style='height:100vh; min-height:380px;')
+				- else
+					row#document(style='display:block')
+			.column
+
+block scripts
+	script.
+
+		init();
+
+		function init(){
+			var open = $('#form');
+			var idEle = $('#id').val();
+			var btnPassword = $('#btnPassword');
+			var loadElement = $('#document');
+			var preloader = $('#preloader');
+			var txtPassword = $('#txtPassword');
+			//- console.log(open.attr('action'));
+			open.on('submit',(e)=>{
+				e.preventDefault();
+				preloader.show();
+
+				if(txtPassword.val().length<1){swal({title: 'Password tidak boleh kosong', button:false, text:' ', icon:'warning'}); preloader.hide(); return;}
+
+				$.post(open.attr('action'), {id: idEle, password: txtPassword.val()}, (result, stat, type)=>{
+					preloader.hide();
+				})
+				.done((d)=>{
+					open.hide();
+					loadElement.html(d).fadeIn(1000);
+					console.log(d);
+				})
+				.fail((f)=>{
+					preloader.hide();
+					swal({title: 'Password Salah', button:false, text:' ', icon:'error'});
+					console.log(f);
+				});
+			});
+		}

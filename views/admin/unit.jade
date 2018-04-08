@@ -1,0 +1,147 @@
+extends layout
+
+block title
+	| Unit Modul &mdash; Admin
+
+block content
+	.row
+		.span6
+			.widget.widget-nopad
+				.widget-header
+					i.icon-info-sign
+					h3  Information
+				.widget-content
+					form.form-horizontal(style='padding:15px;')
+						.control-group
+							label.control-label Praktikum
+							.controls
+								span.disabled= modul.Praktikum.nama
+						.control-group
+							label.control-label Modul
+							.controls
+								span.disabled= modul.nama
+
+						.control-group
+							label.control-label Nomor Modul
+							.controls
+								span.disabled= modul.nomor
+						.control-group
+							label.control-label Deskripsi
+							.controls
+								span.disabled= modul.description
+			.widget.widget-nopad
+				.widget-header
+					i.icon-list-alt
+					h3  Daftar Praktikum
+				.widget-content
+					.widget-content(style='padding:10px;')
+						table.table.table-striped.table-bordered
+							thead
+								tr
+									th Nama
+									th Modul
+									th Type
+									//th Asisten
+									th 
+								tbody
+									// - if(data.length > 0)
+									// 	- each praktikum, i in data
+									// 		tr
+									// 			td= praktikum.nama
+									// 			td= Object.keys(praktikum.Moduls).length
+									// 			td 0
+									// 			td 0
+									// 			td.td-actions(style='text-align:center;')
+									// 				a.btn.btn-small.btn-success(href='/admin/praktikum/'+praktikum.id)
+									// 					i.btn-icon-only.icon-pencil
+									// 				span(style='display:inline-block; width:20px;')
+									// 				a.btn.btn-danger.btn-small(href='/admin/praktikum/'+praktikum.id+'/delete')
+									// 					i.btn-icon-only.icon-remove
+									// - else
+									tr
+										td(colspan=4, style='text-align:center;') No Row Exist.
+
+		.span6
+			.widget.widget-nopad
+				.widget-header
+					i.icon-plus-sign
+					h3  Tambah Unit Baru
+				.widget-content
+					.form-actions(style='text-align:center;')
+						//- a.btn#add-attachment(href='javascript:;') 
+						//- 	i.icon-file
+						//- 	| &nbsp;Attachment
+						//- | &nbsp;
+						a.btn#add-document(href='javascript:;') 
+							i.icon-book
+							| &nbsp;Document
+						| &nbsp;
+						a.btn#add-quiz(href='javascript:;') 
+							i.icon-magic
+							| &nbsp;Quiz
+					form#add-unit.form-horizontal(style='padding:15px;', method='POST', action='/admin/modul/unit/save',enctype='multipart/form-data'
+					)
+						.control-group
+							label.control-label(for='praktikum') Praktikum
+							.controls
+								- if(modul==null)
+									select(id='praktikum', name='praktikum_id')
+										option(value='') -- Select --
+								- else
+									span.disabled= modul.Praktikum.nama
+									input(type='hidden', name='praktikum_id', value= modul.praktikumId)
+						.control-group
+							label.control-label(for='modul') Modul
+							.controls
+								- if(modul==null)
+									select(id='modul', name='modul_id')
+										option(value='') -- Select --
+								- else
+									span.disabled= modul.nama
+									input(type='hidden', name='modul_id', value= modul.id)
+								//p.help-block Your username is for logging in and cannot be changed.
+						#units
+						br
+						.form-actions
+							button.btn.btn-primary(type='submit') Simpan 
+							span(style='display:inline-block; width:20px;')
+							a.btn(href='/admin/modul/unit/done') Batal
+
+block scripts
+	script.
+
+		$(document).ready(()=>{
+			initActions();
+		});
+
+		function initActions(){
+		var unitCount = 0;
+		var file=0,doc=0,quiz=0;
+
+		$('#add-document').click((e)=>{newDocument(); console.log('adding document');});
+		$('#add-quiz').click((e)=>{newQuiz(); console.log('adding quiz');});
+		$('#add-attachment').click((e)=>{newAttachment(); console.log('adding attachment');});
+
+		function newDocument(){
+			addUnit('/admin/modul/unit/document/', (doc++));
+		}
+		function newQuiz(){
+			addUnit('/admin/modul/unit/quiz/', (quiz++));
+		}
+		function newAttachment(){
+			addUnit('/admin/modul/unit/attachment/', (file++));
+		}
+		
+		function addUnit(templateUrl, num){
+			var url = location.protocol+'//'+location.host;
+			url += templateUrl+((unitCount++));
+			url += '/'+(num++);
+			$.get(url, function(elem){
+				$('#units').append(elem);
+			}, 'html');
+
+			//- console.log(url);
+			//- console.log(file+', '+doc+', '+quiz);
+		}
+
+		}

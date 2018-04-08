@@ -1,0 +1,304 @@
+extends layout
+
+block title
+  | Praktikum &mdash; Admin
+
+block content
+  .row
+    .span6
+      .widget.widget-nopad
+        .widget-header
+          i.icon-list-alt
+          h3  Today's Stats
+        // /widget-header
+        .widget-content
+          .widget.big-stats-container
+            .widget-content
+              h6.bigstats
+                | A fully responsive premium quality admin template built on Twitter Bootstrap by 
+                a(href='http://www.egrappler.com', target='_blank') EGrappler.com
+                | .  These are some dummy lines to fill the area.
+              #big_stats.cf
+                .stat
+                  i.icon-anchor
+                  span.value 851
+                // .stat
+                .stat
+                  i.icon-thumbs-up-alt
+                  span.value 423
+                // .stat
+                .stat
+                  i.icon-twitter-sign
+                  span.value 922
+                // .stat
+                .stat
+                  i.icon-bullhorn
+                  span.value 25%
+                // .stat
+            // /widget-content
+      // /widget
+      .widget.widget-nopad
+        .widget-header
+          i.icon-list-alt
+          h3  Recent News
+        // /widget-header
+        .widget-content
+          #calendar
+        // /widget-content
+      // /widget
+      .widget
+        .widget-header
+          i.icon-file
+          h3  Content
+        // /widget-header
+        .widget-content
+          ul.messages_layout
+            li.from_user.left
+              a.avatar(href='#')
+                img(src='img/message_avatar1.png')
+              .message_wrap
+                span.arrow
+                .info
+                  a.name John Smith
+                  span.time 1 hour ago
+                  .options_arrow
+                    .dropdown.pull-right
+                      a#dLabel.dropdown-toggle(role='button', data-toggle='dropdown', data-target='#', href='#')
+                        i.icon-caret-down
+                      ul.dropdown-menu(role='menu', aria-labelledby='dLabel')
+                        li
+                          a(href='#')
+                            i.icon-share-alt.icon-large
+                            |  Reply
+                        li
+                          a(href='#')
+                            i.icon-trash.icon-large
+                            |  Delete
+                        li
+                          a(href='#')
+                            i.icon-share.icon-large
+                            |  Share
+                .text
+                  | As an interesting side note, as a head without a body, I envy the dead. There's one way and only one way to determine if an animal is intelligent. Dissect its brain! Man, I'm sore all over. I feel like I just went ten rounds with mighty Thor.
+            li.by_myself.right
+              a.avatar(href='#')
+                img(src='img/message_avatar2.png')
+              .message_wrap
+                span.arrow
+                .info
+                  a.name Bender (myself) 
+                  span.time 4 hours ago
+                  .options_arrow
+                    .dropdown.pull-right
+                      a#dLabel.dropdown-toggle(role='button', data-toggle='dropdown', data-target='#', href='#')
+                        i.icon-caret-down
+                      ul.dropdown-menu(role='menu', aria-labelledby='dLabel')
+                        li
+                          a(href='#')
+                            i.icon-share-alt.icon-large
+                            |  Reply
+                        li
+                          a(href='#')
+                            i.icon-trash.icon-large
+                            |  Delete
+                        li
+                          a(href='#')
+                            i.icon-share.icon-large
+                            |  Share
+                .text
+                  | All I want is to be a monkey of moderate intelligence who wears a suit… that's why I'm transferring to business school! I had more, but you go ahead. Man, I'm sore all over. I feel like I just went ten rounds with mighty Thor. File not found.
+            li.from_user.left
+              a.avatar(href='#')
+                img(src='img/message_avatar1.png')
+              .message_wrap
+                span.arrow
+                .info
+                  a.name Celeste Holm 
+                  span.time 1 Day ago
+                  .options_arrow
+                    .dropdown.pull-right
+                      a#dLabel.dropdown-toggle(role='button', data-toggle='dropdown', data-target='#', href='#')
+                        i.icon-caret-down
+                      ul.dropdown-menu(role='menu', aria-labelledby='dLabel')
+                        li
+                          a(href='#')
+                            i.icon-share-alt.icon-large
+                            |  Reply
+                        li
+                          a(href='#')
+                            i.icon-trash.icon-large
+                            |  Delete
+                        li
+                          a(href='#')
+                            i.icon-share.icon-large
+                            |  Share
+                .text
+                  | And I'd do it again! And perhaps a third time! But that would be it. Are you crazy? I can't swallow that. And I'm his friend Jesus. No, I'm Santa Claus! And from now on you're all named Bender Jr.
+            li.from_user.left
+              a.avatar(href='#')
+                img(src='img/message_avatar2.png')
+              .message_wrap
+                span.arrow
+                .info
+                  a.name Mark Jobs 
+                  span.time 2 Days ago
+                  .options_arrow
+                    .dropdown.pull-right
+                      a#dLabel.dropdown-toggle(role='button', data-toggle='dropdown', data-target='#', href='#')
+                        i.icon-caret-down
+                      ul.dropdown-menu(role='menu', aria-labelledby='dLabel')
+                        li
+                          a(href='#')
+                            i.icon-share-alt.icon-large
+                            |  Reply
+                        li
+                          a(href='#')
+                            i.icon-trash.icon-large
+                            |  Delete
+                        li
+                          a(href='#')
+                            i.icon-share.icon-large
+                            |  Share
+                .text
+                  | That's the ONLY thing about being a slave. Now, now. Perfectly symmetrical violence never solved anything. Uh, is the puppy mechanical in any way? As an interesting side note, as a head without a body, I envy the dead.
+        // /widget-content
+      // /widget
+    // /span6
+    .span6
+      .widget
+        .widget-header
+          i.icon-bookmark
+          h3 Important Shortcuts
+        // /widget-header
+        .widget-content
+          .shortcuts
+            a.shortcut(href='javascript:;')
+              i.shortcut-icon.icon-list-alt
+              span.shortcut-label Apps
+            a.shortcut(href='javascript:;')
+              i.shortcut-icon.icon-bookmark
+              span.shortcut-label Bookmarks
+            a.shortcut(href='javascript:;')
+              i.shortcut-icon.icon-signal
+              span.shortcut-label Reports
+            a.shortcut(href='javascript:;')
+              i.shortcut-icon.icon-comment
+              span.shortcut-label Comments
+            a.shortcut(href='javascript:;')
+              i.shortcut-icon.icon-user
+              span.shortcut-label Users
+            a.shortcut(href='javascript:;')
+              i.shortcut-icon.icon-file
+              span.shortcut-label Notes
+            a.shortcut(href='javascript:;')
+              i.shortcut-icon.icon-picture
+              span.shortcut-label Photos
+            a.shortcut(href='javascript:;')
+              i.shortcut-icon.icon-tag
+              span.shortcut-label Tags
+          // /shortcuts
+        // /widget-content
+      // /widget
+      .widget
+        .widget-header
+          i.icon-signal
+          h3  Area Chart Example
+        // /widget-header
+        .widget-content
+          canvas#area-chart.chart-holder(height='250', width='538')  
+          // /area-chart
+        // /widget-content
+      // /widget
+      .widget.widget-table.action-table
+        .widget-header
+          i.icon-th-list
+          h3 A Table Example
+        // /widget-header
+        .widget-content
+          table.table.table-striped.table-bordered
+            thead
+              tr
+                th  Free Resource 
+                th  Download
+                th.td-actions  
+            tbody
+              tr
+                td  Fresh Web Development Resources 
+                td  http://www.egrappler.com/ 
+                td.td-actions
+                  a.btn.btn-small.btn-success(href='javascript:;')
+                    i.btn-icon-only.icon-ok  
+                  a.btn.btn-danger.btn-small(href='javascript:;')
+                    i.btn-icon-only.icon-remove  
+              tr
+                td  Fresh Web Development Resources 
+                td  http://www.egrappler.com/ 
+                td.td-actions
+                  a.btn.btn-small.btn-success(href='javascript:;')
+                    i.btn-icon-only.icon-ok  
+                  a.btn.btn-danger.btn-small(href='javascript:;')
+                    i.btn-icon-only.icon-remove  
+              tr
+                td  Fresh Web Development Resources 
+                td  http://www.egrappler.com/ 
+                td.td-actions
+                  a.btn.btn-small.btn-success(href='javascript:;')
+                    i.btn-icon-only.icon-ok  
+                  a.btn.btn-danger.btn-small(href='javascript:;')
+                    i.btn-icon-only.icon-remove  
+              tr
+                td  Fresh Web Development Resources 
+                td  http://www.egrappler.com/ 
+                td.td-actions
+                  a.btn.btn-small.btn-success(href='javascript:;')
+                    i.btn-icon-only.icon-ok  
+                  a.btn.btn-danger.btn-small(href='javascript:;')
+                    i.btn-icon-only.icon-remove  
+              tr
+                td  Fresh Web Development Resources 
+                td  http://www.egrappler.com/ 
+                td.td-actions
+                  a.btn.btn-small.btn-success(href='javascript:;')
+                    i.btn-icon-only.icon-ok  
+                  a.btn.btn-danger.btn-small(href='javascript:;')
+                    i.btn-icon-only.icon-remove  
+        // /widget-content
+      // /widget
+      .widget.widget-nopad
+        .widget-header
+          i.icon-list-alt
+          h3  Recent News
+        // /widget-header
+        .widget-content
+          ul.news-items
+            li
+              .news-item-date
+                span.news-item-day 29
+                span.news-item-month Aug
+              .news-item-detail
+                a.news-item-title(href='http://www.egrappler.com/thursday-roundup-40/', target='_blank') Thursday Roundup # 40
+                p.news-item-preview
+                  | This is our web design and development news series where we share our favorite design/development related articles, resources, tutorials and awesome freebies.
+            li
+              .news-item-date
+                span.news-item-day 15
+                span.news-item-month Jun
+              .news-item-detail
+                a.news-item-title(href='http://www.egrappler.com/retina-ready-responsive-app-landing-page-website-template-app-landing/', target='_blank') Retina Ready Responsive App Landing Page Website Template – App Landing
+                p.news-item-preview
+                  | App Landing is a retina ready responsive app landing page website template perfect for software and application developers and small business owners looking to promote their iPhone, iPad, Android Apps and software products.
+            li
+              .news-item-date
+                span.news-item-day 29
+                span.news-item-month Oct
+              .news-item-detail
+                a.news-item-title(href='http://www.egrappler.com/open-source-jquery-php-ajax-contact-form-templates-with-captcha-formify/', target='_blank') Open Source jQuery PHP Ajax Contact Form Templates With Captcha: Formify
+                p.news-item-preview
+                  | Formify is a contribution to lessen the pain of creating contact forms. The collection contains six different forms that are commonly used. These open source contact forms can be customized as well to suit the need for your website/application.
+        // /widget-content
+      // /widget
+    // /span6
+  // /row
+  // /container
+  // /main-inner
+  // /main

@@ -1,12 +1,17 @@
 doctype html
 html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    link(rel='stylesheet', href='/stylesheets/milligram.min.css')
+	head
+		title= title
 
-    script(type='text/javascript', src='/javascripts/jquery.min.js')
+		meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
+		meta(name='apple-mobile-web-app-capable', content='yes')
 
-    block styles
-  body
-    block content
+		link(rel='stylesheet', href='/stylesheets/milligram.min.css')
+		link(rel='stylesheet', href='/stylesheets/normalize.css')
+		link(rel='stylesheet', href='/stylesheets/style.css')
+
+		script(type='text/javascript', src='/javascripts/jquery.min.js')
+
+		block styles
+	body
+		block content

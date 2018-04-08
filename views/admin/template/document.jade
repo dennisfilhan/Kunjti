@@ -1,0 +1,23 @@
+extends layout
+block name 
+	| Document
+block content
+	- var cName = 'units['+(id)+']';
+	- var sample = 'Sample Quiz Input '+id;
+	.control-group
+		label.control-label(for='') Nama
+		.controls
+			input(name= cName+'[unit_type]', type='hidden', value='DOCUMENT')
+			input(name= cName+'[name]', type='text', value='', placeholder='Nama Dokumen ')
+	.control-group
+		label.control-label(for='') Passkey
+		.controls
+			input(name= cName+'[passkey]', type='text', value='', placeholder='Passkey ')
+	.control-group
+		label.control-label(for='') Deskripsi
+		.controls
+			textarea(name= cName+'[description]', placeholder='Deskripsi Dokumen ',rows='6') 
+	.control-group
+		label.control-label(for='') Attachment
+		.controls
+			input(name= cName+'[file]', type='file')

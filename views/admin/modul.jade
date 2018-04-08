@@ -1,0 +1,164 @@
+extends layout
+
+block title
+	| Modul &mdash; Admin
+
+block content
+	.row
+		.span6
+			.widget.widget-nopad
+				.widget-header
+					i.icon-info-sign
+					h3  Information
+				.widget-content
+					.widget.big-stats-container
+						.widget-content
+							//| Table
+			.widget.widget-nopad
+				.widget-header
+					i.icon-list-alt
+					h3  Daftar Modul
+				.widget-content
+					.widget-content(style='padding:10px;')
+						table.table.table-striped.table-bordered
+							thead
+								tr
+									th Praktikum
+									th Modul
+									th Nomor
+									th Komponen
+									th Praktikan
+									th 
+								tbody
+									- each modul, m in collections.modul_list
+										tr
+											td
+												a(href='/admin/praktikum/'+modul.Praktikum.id)
+													= (modul.Praktikum.nama)
+											td 
+												a(href='/admin/modul/show/'+modul.id)
+													= (modul.nama)
+											td= (modul.nomor)
+											td= Object.keys(modul.Units).length
+											td 0
+											td.td-actions(style='text-align:center;')
+												a.btn.btn-small.btn-success(href='javascript:;')
+													i.btn-icon-only.icon-pencil
+												span(style='display:inline-block; width:20px;')
+												a.btn.btn-danger.btn-small(href='/admin/modul/delete/'+modul.id)
+													i.btn-icon-only.icon-remove
+
+		.span6
+			.widget.widget-nopad
+				.widget-header
+					i.icon-plus-sign
+					h3  Tambah Modul Baru
+				.widget-content
+					form#add-praktikum.form-horizontal(style='padding:15px;', method='POST', action='/admin/modul/save')
+						fieldset
+							.control-group
+								label.control-label(for='praktikum') Praktikum
+								.controls
+									select.span3#lab.disabled(name='praktikum', required)
+										option(value='', title='') -- Select --
+										- each praktikum, p in collections.praktikum_list
+											option(value= praktikum.id, title= praktikum.description)= praktikum.nama
+									//p.help-block Your username is for logging in and cannot be changed.
+							.control-group
+								label.control-label(for='nomor') Nomor Modul
+								.controls
+									select.span3#nomor(name='nomor', required)
+										option(value='') -- Select --
+										- for (var i = 1; i <= 6; i++)
+											option(value= i)= i
+							.control-group
+								label.control-label(for='nama') Nama Modul
+								.controls
+									input.span3#nama(name='nama', type='text', value='Introduction of Something', placeholder='e.g. Introduction of Data')
+							//- .control-group
+							//- 	label.control-label(for='jumlah-komponen') Komponen
+							//- 	.controls
+							//- 		input.span1.disabled#jumlah-komponen(name='jumlah_komponen', type='number', value='1', placeholder='', disabled='')
+							//- 		span(style='display:inline-block; width:20px;')
+							//- hr
+							//- fieldset#komponen-block
+							//- 	//Komponen
+							//- 	- for (var i = 0; i < 2; i++)
+							//- 		.control-group(id= 'komponen-'+i)
+							//- 			label.control-label(for='komponen-id-'+i) 
+							//- 				| Komponen #
+							//- 				= (i+1)
+							//- 			.controls
+							//- 				.accordion
+							//- 					.accordion-group
+							//- 						.accordion-heading
+							//- 							a.accordion-toggle(data-toggle='collapse', data-parent= '#komponen-block', href='#accordion'+i) 
+							//- 								| Komponen 
+							//- 								= (i+1)
+							//- 						.accordion-body.collapse(id= 'accordion'+i, class= (i==0?'in':''))
+							//- 							.accordion-inner
+							//- 								input.span3(type='text', name='komponen['+i+'][nama]', value='Tes Awal', placeholder='Nama')
+							//- 								span(style='display:block; height:5px;')
+							//- 								input.span3(type='text', name='komponen['+i+'][description]', value='Description of Tes Awal', placeholder='Deskripsi')
+							//- 								span(style='display:block; height:5px;')
+							//- 								input.span3(type='text', name='komponen['+i+'][bobot]', value='20', placeholder='Weight', title='Bobot')
+							//- 								span(style='display:block; height:5px;')
+							//- 								input.span3(type='file', name='komponen['+i+'][file]', value='', placeholder='Attachment File')
+							//- 								span(style='display:block; height:5px;')
+							//- 								select.span3(name='komponen['+i+'][type]')
+							//- 									option(value='') -- Select --
+							//- 									option(value='document') Document
+							//- 									option(value='quiz') Quiz
+							//- 									option(value='modul') Modul
+							//- 									option(value='jurnal') Jurnal
+							//- 								span(style='display:block; height:5px;')
+							//- 								input.span3(type='text', name='komponen['+i+'][answerkey]', value='abcdeabcde', placeholder='Answer Key', title='Answer Key (optional)')
+							//- 								span(style='display:block; height:5px;')
+							//- 								input.span3(type='text', name='komponen['+i+'][timelimit]', value='10000', placeholder='Time Limit (optional)', title='Time Limit (optional)')
+							//- 								span(style='display:block; height:5px;')
+							//- 								input.span3(type='text', name='komponen['+i+'][passcode]', value='tesawal1', placeholder='Enter Password (optional)', title='Enter Password (optional)')
+
+							//- 			//.controls
+							//- 	span(style='display:block; height:10px;')
+							//- a#add-komponen.span3.btn.btn-secondary(title='Tambah Komponen', style='margin-left:30%;', href='javascript:;')
+							//- 	i.icon-plus-sign 
+							//- 	| Tambahkan Komponen
+							//- hr
+							.control-group
+								label.control-label(for='description') Deskripsi
+								.controls
+									textarea.span3#description(name='description', type='text', placeholder='', rows=6) Contoh Deskripsi Modul Ini
+
+
+							br
+							.form-actions
+								button.btn.btn-primary(type='submit', data-loading-text='Menyimpan ...') Lanjutkan 
+								span(style='display:inline-block; width:20px;')
+								//button.btn Batal
+
+block scripts
+	script.
+		//- $(document).ready(function(e){
+			
+		//- });
+	
+		$('#add-komponen').click(function(e){
+			e.preventDefault();
+			//alert('halo');
+			addUnit();
+		});
+
+		function addUnit(){
+			//- var count = parseInt($('#jumlah-komponen').val());
+			//- //count -=1;
+			//- var unit = $('#komponen-'+(count-1)).parent().clone();
+			//- //var count = parseInt(unit.find('#komponen-0').attr('id').split('-')[1])+1; count++;
+			//- unit.find('#komponen-'+(count-1)).attr('id', 'komponen-'+(count));
+			//- //console.log(unit.find('[name="komponen[0][nama]"]'));
+			//- unit.find('#accordion'+(count-1)).attr('id','accordion'+(count));
+			//- unit.find('.accordion-toggle').text('Komponen '+(count));
+			//- //- console.log(unit);
+			//- $('#komponen-block').append(unit.html());
+			//- count++;
+			//- $('#jumlah-komponen').val(count);
+		}

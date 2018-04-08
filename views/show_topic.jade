@@ -4,6 +4,8 @@ block styles
 	style.
 		.full{display:block; width:99.8%; margin:0 auto}
 
+		.radio-selected{background-color:#9b4dca; color:#f5f5f5;}
+
 
 block content
 	div(id='container')
@@ -29,7 +31,7 @@ block content
 										li Jawab dengan tenang
 										li Tes Awal mempunyai batas waktu sebanyak 10 menit
 								hr
-								h2 enter password
+								h2 .enter password
 								div.row.options
 									fieldset.full
 										input(type='text', name='password', placeholder='ex. KunjtiAA123#$!')
@@ -42,7 +44,7 @@ block content
 					div(id='step2').step
 						div.row.row-responsive
 							div.column.column-50.column-offset-25
-								h2 fill your information
+								h2 .fill your information
 								div.row.options
 									fieldset(id='userdata').full
 										label NIM
@@ -81,11 +83,15 @@ block content
 											- for(x=0;x<group_max;x++)
 												div(id= 'answer-group-'+x).parent-radio
 													label= 'Answer '+(x+1)
+													//input(type='hidden', name='answer['+x+']', value='X')
 													div.row.grouping-radio
-														- for(y=0;y<item_max;y++)
-															div(style="border:1px solid #dcdcdc;margin:8px;text-align:center;padding:6px;max-height:42px;border-radius:5px;").child-radio.column
-																label(style="cursor:pointer;")= index[y]
-																	input(type='radio', name= 'answer['+x+']', value= index[y], title= index[y], style='display:none;', class='pretty-radio')
+														- for(y=0;y<item_max+1;y++)
+															if y==item_max
+																input(type='radio', checked='checked', name= 'answer['+x+']', title= index[y], style='display:none;', class='pretty-radio', value='')
+															else
+																div(style="border:1px solid #dcdcdc;margin:8px;text-align:center;padding:6px;max-height:42px;border-radius:5px;").child-radio.column
+																	label(style="cursor:pointer;")= index[y]
+																		input(type='radio', name= 'answer['+x+']', value= index[y], title= index[y], style='display:none;', class='pretty-radio')
 									hr
 									div.actions.row
 										button(type='submit', onclick='return confirm("Finish now?");').button-large.column.column-100 Selesai
@@ -93,22 +99,22 @@ block content
 	script(type='text/javascript', src='/javascripts/easytimer.min.js')
 	script.
 		$(document).ready(function(e){
-			$('#document-box>iframe').height($('#option-box').height()-40);
-			step('steps');
-
+			resizeMe();
 			checkPassword();
 			checkUser();
 		});
 
+		function resizeMe(){
+			$('#document-box>iframe').height($('#option-box').height()-40);
+			step('steps');
+		}
+
 		$('input[type=radio].pretty-radio').change(function(e){
 			var rparent = $(this).parents('div.child-radio');
 			var rrparent = $(this).parents('div.grouping-radio');
-			rrparent.find('div.child-radio').css({'background-color':'#fff', 'color':'#545454'});
-			//rrparent.find('div.child-radio').removeClass('radio-selected');
+			rrparent.find('div.child-radio').removeClass('radio-selected');
 			//if($(this).is(':checked')) {
-				//console.log($(this).attr('name')+'-'+$(this).val()+' checked true'); 
-				rparent.css({'background-color':'#9b4dca', 'color':'#fff'});
-				//rparent.addClass('radio-selected');
+				rparent.addClass('radio-selected');
 			//}
 		});
 

@@ -1,0 +1,118 @@
+extends layout_v2
+
+block title
+	| Quiz Result &mdash; 
+	=result.unit.Quiz.nama
+	
+block styles
+	style.
+		#user{padding:5% 5px 5px 5px;}
+		#user h1,h2,h3,h4,h5{margin:0;}
+		#user .nama{margin:8px 0;}
+		.result-val-box{font-size:150%;}
+		.result-val-box .result-val{font-size:380%; display:inline-block;}
+		.result-val-box .result-max{}
+
+		.progress-review{margin:15px 0;}
+			.progress-review hr{margin:0; padding:0; position:relative; top:6px; z-index:-5; border:0;border-bottom:1px solid #d8d4e0; margin:0 20px; opacity:0.5;}
+			.progress-review .point{width:8px; height:8px; display:inline-block; margin:2px; border-radius:50%; background-color:#d1c4e9}
+			.progress-review .correct{background-color:#b39ddb;}
+			.progress-review .notcorret{background-color:#f8bbd0;}
+
+block content
+
+	- var judge = result.review;
+	//- MAX NUMBER QUESTION
+	- var max= (result.choices).length
+	//- SCORE
+	- var score= result.score
+	//- Counting Percentage
+	- var progress = (score/max)*100
+	//- User Data
+	- var user = result.user
+
+	.container
+		.row(style='margin:10% 0 0 0;')
+			.column
+			.column.column-60
+				.row(style='text-align:center;')
+					h3(style='margin:8px auto; display:inline-block;') 
+						i.icon-certificate
+						| &nbsp;&middot;&nbsp;Quiz Result
+				.row(style='min-height:30vh;')
+					.column(style='border-right:2px solid #dcdcdc; text-align:center;')#user
+						h1
+							i.icon-user(style='font-size:150%;')
+						//- ASISTEN PLOT
+						h4(style='font-size:80%; margin-bottom:15px;')
+							i.icon-user-md
+							| &nbsp;&nbsp;DNN
+						//- NIM
+						h4  &middot;&nbsp;
+							=user.nim
+							| &nbsp;&middot;
+						//- NAMA
+						h2.nama= user.nama
+						//- KELAS
+						h4  &mdash;&nbsp;
+							= user.kelas
+							| &nbsp;&mdash;
+						//- UNIT NAME
+						h5= result.unit.Quiz.nama
+							//- | &nbsp;&middot;&nbsp; 
+
+					.column(style='text-align:center;')
+						.result-val-box(title= progress+'%')
+							//- RESULT VALUE
+							.result-val
+								= score
+							//- RESULT MAX NUMBER
+							span.result-max
+								| /
+								= max
+						h4 
+							i.icon-time
+							| &nbsp;&middot;&nbsp;
+							//- SUBMIT TIME
+							span 10580s
+						.progress-review(title= progress+'%')
+							hr
+							//- Leveling Indicator List
+							- var hackerLevels = ['script kiddies','hacktivist','black hat professional','the automated tool'];
+							- var romanLevels = ['slaves','freedman','plebians','patricians'];
+							- var romanGodLevels = ['zeus','ares','athena','apollo'];
+							- var iconLevels = ['shopping-cart','road','group','fighter-jet'];
+							- for p, i in judge
+								span(class='point '+(p==1?'correct':'notcorret')) &nbsp;
+
+						- var levels = hackerLevels
+						- var level =(progress<=25?levels[0]:(progress<=50?levels[1]:(progress<=75?levels[2]:(progress<=100?levels[3]:'-'))))
+						- var iconlevel =(progress<=25?iconLevels[0]:(progress<=50?iconLevels[1]:(progress<=75?iconLevels[2]:(progress<=100?iconLevels[3]:'-'))))
+						.level-box
+							h5 
+								| &mdash;&nbsp;
+								= level
+								| &nbsp;&mdash;
+							i(class='icon-'+iconlevel)
+				.row
+					.column.column-100(style='text-align:center; margin:5% 2% 2%;')
+						a(href='/feedback')
+							| SEND FEEDBACK
+
+
+			.column
+
+block scripts
+	script.
+
+		setInterval(()=>{
+			$('.result-val').toggleClass('animated tada');
+		}, 4000);
+
+		setTimeout(()=>{
+			swal({title: 'Isi Feedback', text: 'Bagaimana rasanya soal, suasana selama tes awal atau praktikum sebelumnya?\nAda saran atau kritik? Jangan sampe gak diisi loh! Klik Link "SEND FEEDBACK" di halaman ini.', button: false, icon: '/imgs/mailbox.svg'});
+		}, 60000);
+
+		$(window).on('unload',()=>{
+			return swal({title: 'Isi Feedback', text: 'Bagaimana rasanya soal, suasana selama tes awal atau praktikum sebelumnya?\nAda saran atau kritik? Jangan sampe gak diisi loh! Klik Link "SEND FEEDBACK" di halaman ini.', button: false, icon: 'warning'});
+		});
