@@ -1,0 +1,8 @@
+use kunjti_development
+LOAD DATA LOCAL INFILE 'BASDAT-SHIFT-MHS.csv' 
+INTO TABLE praktikan_shift_assigns
+FIELDS TERMINATED BY ';'
+ENCLOSED BY ''
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES
+(praktikanId,shiftId,@dummy,@dummy)

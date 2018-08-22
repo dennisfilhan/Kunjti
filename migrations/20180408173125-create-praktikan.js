@@ -4,13 +4,13 @@ module.exports = {
     return queryInterface.createTable('Praktikans', {
       id: {
         allowNull: false,
-        autoIncrement: true,
+        // autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
-      },
-      nim: {
         type: Sequelize.STRING
       },
+      // nim: {
+      //   type: Sequelize.STRING
+      // },
       nama: {
         type: Sequelize.STRING
       },

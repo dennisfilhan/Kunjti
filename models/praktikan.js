@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   var Praktikan = sequelize.define('Praktikan', {
-    nim: DataTypes.STRING,
+    // nim: DataTypes.STRING,
     nama: DataTypes.STRING,
     kelas: DataTypes.STRING
   }, {});

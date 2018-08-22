@@ -5,6 +5,8 @@ block title
 
 block content
 	.row
+	- var data = res
+	- var moduls = data.Moduls
 		.span3
 			.widget.widget-nopad
 				.widget-header
@@ -15,12 +17,13 @@ block content
 						.control-group
 							.controls
 								select(onchange='document.location.href=this.value').span2
-									option(value='') -- Select --
-									- for(var i=0; i<10; i++)
-										- if(i==praktikum_id)
-											option(value='/admin/nilai/praktikum-'+i, selected)= i
+									option(value='/admin/nilai') -- Select --
+									// - for(var i=0; i<10; i++)
+									- each praktikum, i in data
+										- if(praktikum.id==praktikum_id)
+											option(value='/admin/nilai/praktikum-'+praktikum.id, selected)= praktikum.nama
 										- else
-											option(value='/admin/nilai/praktikum-'+i)= i
+											option(value='/admin/nilai/praktikum-'+praktikum.id)= praktikum.nama
 			.widget.widget-nopad
 				.widget-header
 					i.icon-filter
@@ -57,7 +60,7 @@ block content
 								| / 
 								| 867
 
-		.span9
+		.span8
 			.widget.widget-nopad
 				.widget-header
 					i.icon-list-alt
@@ -75,30 +78,34 @@ block content
 								th Jumlah Penilaian
 								th .
 						tbody
-							- for(var i=1; i<6; i++)
+							// - for(var i=1; i<6; i++)
+							- each modul, i in res[0].Moduls
 								tr
-									td= i
-									td Introduction of Data
-									td 3
-									td DNN
+									td= modul.nomor
+									td= modul.nama
+									td= (modul.Units!=null)?Object.keys(modul.Units).length:0
+									td &mdash;
 									td 657
 									td 433
 									td.td-actions
 										a.btn.btn-small.btn-default(href='/admin/nilai/praktikum-'+(praktikum_id==null?0:praktikum_id)+'/modul-'+i)
 											i.btn-icon-only.icon-search  
 			- if(modul_id!=null)
+				.row(style='text-align:right; padding:10px;')
+					button.btn.btn-success()
+						i.icon-download-alt 
+						span(style='display:inline-block; width:20px;')
+						| Export XLSX
+					&nbsp;
+					button.btn.btn-warning()
+						i.icon-upload-alt 
+						span(style='display:inline-block; width:20px;')
+						| Online Synchronize
 				.widget.widget-nopad
 					.widget-header
 						i.icon-list-alt
 						h3  
 							| Penilaian
-						span.span4.pull-right
-							span.span1
-								| &nbsp;
-							button.btn.btn-warning(style='margin-left:10%;')
-								i.icon-upload-alt 
-								span(style='display:inline-block; width:20px;')
-								| Online Synchronize
 					.widget-content
 						// p 
 						table.table.table-striped.table-hover

@@ -212,14 +212,65 @@ router.use('/modul/unit',require('./unit'));
 */
 
 router.get('/nilai', function(req, res, next) {
-	res.render('admin/nilai', {menu:3});
+	var data = {};
+	models.Praktikum
+		.findAll({
+			where: {
+				lab: 1
+			},
+			include: models.Modul
+		})
+		.then((result)=>{
+			res.render('admin/nilai', {menu:3, res: result});
+			// res.send('<pre>'+JSON.stringify(result, null, 2)+'</pre>');
+		});
 });
 router.get('/nilai/praktikum-:id', function(req, res, next) {
-	console.log("praktikum_id "+req.params.id);
-	res.render('admin/nilai', {menu:3, praktikum_id: req.params.id});
+	// console.log("praktikum_id "+req.params.id);
+	var data = {};
+	models.Praktikum
+		.findAll({
+			where: {
+				id: req.params.id,
+				lab: 1
+			},
+			include: {model: models.Modul, include: models.Unit}
+		})
+		.then((result)=>{
+			// res.render('admin/nilai', {menu:3, res: result});
+			// res.send('<pre>'+JSON.stringify(result, null, 2)+'</pre>');
+			res.render('admin/nilai', {menu:3, praktikum_id: req.params.id, res: result});
+		});
+
+	// res.render('admin/nilai', {menu:3, praktikum_id: req.params.id, res: result});
 });
 router.get('/nilai/praktikum-:praktikum_id/modul-:modul_id?', function(req, res, next) {
-	res.render('admin/nilai', {menu:3, praktikum_id: req.params.praktikum_id, modul_id: req.params.praktikum_id});
+	models.Nilai
+		.findAll({
+			include: [
+				{model: models.Praktikan},
+				{model: models.Asisten},
+				{
+					model: models.Praktikan_Unit_Assign,
+					include: {
+						model: models.Praktikan_Shift_Assign,
+						include: {
+							model: models.Shift,
+							include: {
+								model: models.Praktikum, 
+								include: models.Lab
+							}
+						}
+					}
+				}
+			]
+		})
+		.then((result)=>{
+			// res.render('admin/nilai', {menu:3, res: result});
+			res.send('<pre>'+JSON.stringify(result, null, 2)+'</pre>');
+			// res.render('admin/nilai', {menu:3, praktikum_id: req.params.id, res: result});
+		});
+	// res.render('admin/nilai', {menu:3, praktikum_id: req.params.praktikum_id, modul_id: req.params.praktikum_id});
 });
 
 /*

@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   var Shift = sequelize.define('Shift', {
     alias: DataTypes.STRING,
     location: DataTypes.STRING,
-    everyday: DataTypes.INTEGER,
+    everyday: DataTypes.STRING,
     time_in: DataTypes.INTEGER,
     time_out: DataTypes.INTEGER,
     praktikumId: DataTypes.INTEGER

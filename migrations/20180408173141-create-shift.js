@@ -15,13 +15,13 @@ module.exports = {
         type: Sequelize.STRING
       },
       everyday: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       time_in: {
-        type: Sequelize.INTEGER
+        type: Sequelize.TIME
       },
       time_out: {
-        type: Sequelize.INTEGER
+        type: Sequelize.TIME
       },
       praktikumId: {
         type: Sequelize.INTEGER,

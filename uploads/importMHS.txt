@@ -1,0 +1,8 @@
+use kunjti_development
+LOAD DATA LOCAL INFILE 'BASDAT-MHS-2.csv' 
+INTO TABLE praktikans
+FIELDS TERMINATED BY ';'
+ENCLOSED BY ''
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES
+(id,nama,kelas,@dummy,@dummy)

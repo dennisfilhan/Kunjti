@@ -14,11 +14,17 @@ var models = require('../models');
 *
 */
 
+// 
+// USER DATA
+// 
 router.get('/', function(req, res, next){
 	// res.send('aa');
 	res.redirect('/');
 });
 
+// 
+// SHOW UNIT PAGE
+// 
 router.get('/show/:id', function(req, res, next){
 	var id = req.params.id;
 	models.Unit
@@ -45,41 +51,21 @@ router.get('/show/:id', function(req, res, next){
 				res.render('./show_quiz', {quiz: result});
 			}else if(result.type==='DOCUMENT'){
 				// res.send('DOCUMENT');
+				// res.status(200).send("<pre>"+JSON.stringify(result,null,2)+"</pre>");
 				res.render('./show_document', {document: result});
 			}
-			//res.status(200).send("<pre>"+JSON.stringify(result,null,2)+"</pre>");
 		});
 });
 
+// 
+// ENROLL = QUIZ RESULT
+// 
 router.post('/enrolled', function(req, res, next){
 
-	// var nim = req.body.nim, 
-	// 	nama = req.body.nama, 
-	// 	kelas = req.body.kelas, 
-	// 	shift = req.body.shift,
-	// 	answers = req.body.answer,
-	// 	answers_review = [];
-	// 	score = 0;
-	// var request = {
-	// 	"nim": nim,
-	// 	"nama": nama,
-	// 	"kelas": kelas,
-	// 	"shift": shift,
-	// 	"answers": answers,
-	// 	"answers_review":answers_review,
-	// 	"score": score 
-	// };
-
-	// var answered = fs.readFileSync('./public/files/example/taa/modul1.txt', 'utf8');
-	// 	answered = answered.replace(/\s+/g,'').split('');
-	// 	answered.forEach(function(e,i){
-	// 		if(e.toUpperCase()==answers[i].toUpperCase()){score++; answers_review.push(1);}
-	// 		else{answers_review.push(0);}
-	// 	});
-
-	// request.score = score;
-
+	var data={};
 	var answer_key = {};
+
+
 	models.Unit
 		.findById(req.body.unitid, {
 			include: [{model: models.Quiz}, {model: models.Document}]
@@ -101,14 +87,45 @@ router.post('/enrolled', function(req, res, next){
 			});
 			// console.log((json.unit.answerkey).split(''));
 			if(result.type=='QUIZ'){
-				// answer_key=result.answerkey;
-				// req.params.answerkey = answer_key;
-				// res.status(200).send("<pre>"+JSON.stringify(json,null,2)+"</pre>");
-				res.status(200).render('./show_quiz_result', {result: json});
-				// return result;
+				data.quiz = json;
+				// console.log(json.user.nim);
+
+				// IF USER NIM NOT VALID
+				if(req.body.assignshiftid==''){
+					// res.status(200).send("<pre>"+JSON.stringify(req.body,null,2)+"</pre>"); 
+					res.status(200).render('./show_quiz_result', {result: data});
+					return;
+				}
+
+
+				models.Nilai.create({
+					praktikanUnitId: json.user.assignunitid,
+					praktikanId: json.user.nim,
+					asistenId: 1,
+					score: json.score
+				})
+				.then((nilai)=>{
+					data.nilai_user = nilai;
+					// return data;
+					// res.status(200).send("<pre>"+JSON.stringify(data,null,2)+"</pre>");
+					res.status(200).render('./show_quiz_result', {result: data});
+				})
+				.catch((ex)=>{
+					data.nilai_error=ex;
+					// res.status(200).send("<pre>"+JSON.stringify(data,null,2)+"</pre>");
+					res.status(200).send("<pre>"+JSON.stringify(data.nilai_error,null,2)+"</pre>");
+				})
+				;
+				// res.status(200).send("<pre>"+JSON.stringify(req.body,null,2)+"</pre>");
+
+				// return data;
 			}
 		// res.status(200).send("<pre>"+JSON.stringify(result,null,2)+"</pre>");
 		})
+		// .then((dataNilai)=>{
+		// 	res.status(200).send("<pre>"+JSON.stringify(dataNilai,null,2)+"</pre>");
+		// })
+		;
 
 	// res.status(200).send("<pre>"+JSON.stringify(req.body,null,2)+"</pre>");
 	//res.send("<pre>"+JSON.stringify(req.body,null,2)+"</pre>");
@@ -121,15 +138,81 @@ router.post('/enrolled', function(req, res, next){
 *
 */
 
-// router.get('/:id/show', function(req, res, next){
-// 	res.render('show_topic', {title: "Tes Awal "+req.params.id, srcpath:"4108f5582449a66743ef5a40f14a2b83"});
-// 	// res.send('workd');
-// });
-
-router.get('/result', (req,res,next)=>{
-	res.render('./show_quiz_result');
+// 
+// USER DATA
+// 
+router.post('/user/',(req,res,next)=>{
+	// var unit = req.params.unit;
+	var praktikan=req.body.praktikan;
+	models.Praktikan_Shift_Assign
+		.findOne({
+			where: {
+				praktikanId: praktikan
+			},
+			include: [
+				{model: models.Praktikan},
+				{model: models.Shift},
+			]
+		})
+		.then((result)=>{
+			if(result==null){
+				res.status(200).json({status: -1});
+			}else{
+				res.status(200).json({status: 1, data: result});
+			// res.status(200).send("<pre>"+JSON.stringify(result,null,2)+"</pre>");
+			}
+		})
+		.catch((ex)=>{
+			// if(req.body.shift!=null){
+			// 	models.Shift
+			// 		.findOne({
+			// 			where: {
+			// 				id: req.body.shift
+			// 			}
+			// 		})
+			// 		.then((res)=>{
+			// 			res.status(200).json({status: 10, messages: res});
+			// 			// console.log(res);
+			// 		});
+			// }else{
+				res.status(406).json({status: 0, messages: ex});
+			// }
+		})
+		;
 });
 
+// 
+// WHEN START BUTTON EXEC
+// 
+router.post('/start',(req,res,next)=>{
+	var shiftAssignId = req.body.shiftAssignId;
+	if(shiftAssignId==-100){shiftAssignId=null;}
+
+	models.Praktikan_Unit_Assign
+		.create({
+			unitId: req.body.unitId,
+			praktikan_on_shift: shiftAssignId
+		})
+		.then((result)=>{
+			res.status(200).json({status: 1, data: result});
+		})
+		.catch((ex)=>{
+			res.status(400).json({status: -1, exceptions: ex});
+		});
+	// res.status(200).json(req.body);
+});
+
+// 
+// RESULT
+// 
+// router.get('/result', (req,res,next)=>{
+// 	res.render('./show_quiz_result');
+// });
+
+
+// 
+// DOCUMENT DATA
+// 
 router.get('/docx/:code', function(req, res, next){
 	var options = {
 	    convertImage: mammoth.images.inline(function(element) {
@@ -154,6 +237,10 @@ router.get('/docx/:code', function(req, res, next){
     .done();
 });
 
+
+// 
+// UNLOCK UNIT
+// 
 router.post('/unlock/:id', function(req, res, next){
 	var id = req.params.id;
 	var password = req.body.password;
@@ -177,20 +264,6 @@ router.post('/unlock/:id', function(req, res, next){
 			res.status(400).json({status: 'error '+ex});
 		})
 		;
-	// if(password=="halo"){
-	// 	res.status(200).send({status: "success"});
-	// }else{
-	// 	res.status(406).send({status: "failed"});
-	// }
-});
-
-router.post('/:id/userdata', function(req, res, next){
-	var nim = req.body.nim;
-	if(nim=="1202150079"){
-		res.status(200).send({status: "success", nim: "1202150079", fullname: "Filhan Dennis", kelas: "SI-39-07", shift: 7});
-	}else{
-		res.status(406).send({status: "failed"});
-	}
 });
 
 module.exports = router;

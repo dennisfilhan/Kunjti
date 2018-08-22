@@ -1,0 +1,18 @@
+//////////////////////////////////////////////////
+DUMMY CREDIT CARD FOR TESTING PURPOSE
+//////////////////////////////////////////////////
+
+SUCCESS
+
+Card Number: 5426400030108754
+CVV2: 869
+Exp Date 2014
+month = April
+
+FAIL
+
+4512490020005811=05
+CVV2: 166
+Exp Date 2014
+month = April
+

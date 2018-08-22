@@ -3,18 +3,26 @@ block title
 	=title
 block styles
 	style.
+		body{background-color:#fafafa;}
 		.highlight{background: #9b4dca; color:#f5f5f5; padding:2px 8px; border-radius:2px;}
 		.highlight:focus{color:#f5f5f5;}
-		#top{border-radius:50%; width:50px; height:50px; padding:5px; position:fixed; bottom:10px; left:48%; right:auto; display:none;}
+		#top{border-radius:50%; width:50px; height:50px; padding:5px; position:fixed; bottom:10px; left:48%; right:auto; display:none;background-color:#fbfbfb;}
 block content
-	.container
+	.container(appname= title)
 		button.button.button-outline#top
 			i.icon.icon-angle-up(style='font-size:250%;')
 		.row(style='height:97vh;')
 			.column
-			.column.column-60(style='padding:5% 2%; text-align:center;')
-				img#logo(src='/imgs/logo-ead-crop.png', height='250px;', style='z-index:-5;')
-				h3(style='background-color:#fff;') &mdash; APPLICATION &mdash;
+			.column.column-50(style='padding:5% 2%; text-align:center;')
+				div#logo(src='/imgs/logo-ead-crop.png', height='270px;', style='background:transparent url("/imgs/logo-ead-crop.png") no-repeat; background-size:98% auto; width:400px; height:280px; z-index:-5; margin:2px auto; display:inline-block; margin-bottom:20px;')
+				h3(style='background-color:transparent;') 
+					//- | &mdash; 
+					i#qquote
+						| &nbsp;&quot;&nbsp;
+						span#qtxt Without destruction there is no creation... there is no change 
+						| &nbsp;&quot;&nbsp;
+						| &mdash;&nbsp;
+						span#qauthor Oda Nobunaga
 				.row
 					.lab-list.column.column-120(style='text-align:center;padding:0 10px 10px;')
 						- each lab, l in labs
@@ -32,7 +40,7 @@ block content
 		//- Section 2 
 		.row
 			.column.column-120
-				#moduls(style='display:none;height:88vh;')
+				#moduls(style='display:none;height:88vh;margin-top:10%;')
 					h1 Title
 					table
 						thead
@@ -58,6 +66,53 @@ block scripts
 		});
 
 		function inits(){
+
+			//- forceAnything();
+			function forceAnything(){
+				$(window).contextmenu((e)=>{
+					e.preventDefault();
+				});
+				$(window).bind('keydown',(e)=>{
+					var key = e.keycode || e.which;
+					if(key==123) e.preventDefault();
+				});
+			}
+
+			checkLoad();
+			function checkLoad(){
+			
+			//- forceAnything();
+			var offset=0, error;
+			var quote=$('#qquote');
+			var txt=$('#qtxt');
+			var author=$('#qauthor');
+
+			setInterval((e)=>{
+				$.post('/qoutes',{pos: offset},(res,stat)=>{
+					//- console.log(res);
+					//- e.preventDefault();
+					if(error==true){swal.close(); $('div.container').show(); $('title').html($('div.container').attr('appname'));}
+					error=false;
+					offset=(offset!=res.qlength-1)?offset:0;
+					offset+=1;
+					
+					quote.hide();
+					txt.html(res.quote.text);
+					author.html(res.quote.author);
+					quote.fadeIn(500);
+					//- quote.show().toggleClass('animated flipInY');
+				})
+				.fail((ex)=>{
+				error=true;
+					$('div.container').hide();
+					$('title').html("Connection Lost");
+					swal({title: 'Connection Lost', text: 'Ooopsss... Sorry, Your Connection Lost. \nPlease Inform Administator', icon: 'error', button:false, closeOnClickOutside: false});
+					//- console.log("FAIL");
+				})
+				;
+			},12000);
+				
+			}
 
 			animLogo();
 			function animLogo(){

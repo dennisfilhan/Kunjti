@@ -1,10 +1,10 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   var Nilai = sequelize.define('Nilai', {
-    // praktikanId: DataTypes.INTEGER,
-    // praktikanUnitId: DataTypes.INTEGER,
+    praktikanId: DataTypes.STRING,
+    praktikanUnitId: DataTypes.INTEGER,
     score: DataTypes.INTEGER,
-    // asistenId: DataTypes.INTEGER
+    asistenId: DataTypes.INTEGER
   }, {});
   Nilai.associate = function(models) {
     // associations can be defined here

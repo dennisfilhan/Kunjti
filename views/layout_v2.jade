@@ -11,9 +11,30 @@ html
 		//- link(href='/stylesheets/bootstrap-responsive.min.css', rel='stylesheet')
 		//- link(href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600', rel='stylesheet')
 		link(href='/admin/css/font-awesome.css', rel='stylesheet')
+		link(href='/stylesheets/font-awesome.min.css', rel='stylesheet')
+
+		link(rel="icon" href="/imgs/favicon-16x16.png" sizes="16x16")
+		link(rel="icon" href="/imgs/favicon-16x16.png" sizes="32x32")
 
 		script(type='text/javascript', src='/javascripts/jquery.min.js')
 
+		style.
+			/* Custom size */
+			.button-small {
+			  font-size: .8rem;
+			  height: 2.8rem;
+			  line-height: 2.8rem;
+			  padding: 0 1.5rem;
+			}
+			.swal-button {
+			  padding: 7px 19px;
+			  border-radius: 2px;
+			  font-size: 12px;
+			  line-height:1;
+			  border: 2px solid #fefefe;
+			}
+			.swal-text {text-align:center; padding:5px;}
+			
 		block styles
 	body
 		block content

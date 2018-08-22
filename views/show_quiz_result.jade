@@ -1,8 +1,10 @@
 extends layout_v2
 
+
 block title
+	- var data = result.quiz;
 	| Quiz Result &mdash; 
-	=result.unit.Quiz.nama
+	=data.unit.Quiz.nama
 	
 block styles
 	style.
@@ -20,16 +22,17 @@ block styles
 			.progress-review .notcorret{background-color:#f8bbd0;}
 
 block content
+	- var data = result.quiz;
 
-	- var judge = result.review;
+	- var judge = data.review;
 	//- MAX NUMBER QUESTION
-	- var max= (result.choices).length
+	- var max= (data.choices).length
 	//- SCORE
-	- var score= result.score
+	- var score= data.score
 	//- Counting Percentage
 	- var progress = (score/max)*100
 	//- User Data
-	- var user = result.user
+	- var user = data.user
 
 	.container
 		.row(style='margin:10% 0 0 0;')
@@ -58,7 +61,7 @@ block content
 							= user.kelas
 							| &nbsp;&mdash;
 						//- UNIT NAME
-						h5= result.unit.Quiz.nama
+						h5= data.unit.Quiz.nama
 							//- | &nbsp;&middot;&nbsp; 
 
 					.column(style='text-align:center;')
@@ -74,7 +77,8 @@ block content
 							i.icon-time
 							| &nbsp;&middot;&nbsp;
 							//- SUBMIT TIME
-							span 10580s
+							span= data.user.timeLapse
+								| s
 						.progress-review(title= progress+'%')
 							hr
 							//- Leveling Indicator List
@@ -86,8 +90,8 @@ block content
 								span(class='point '+(p==1?'correct':'notcorret')) &nbsp;
 
 						- var levels = hackerLevels
-						- var level =(progress<=25?levels[0]:(progress<=50?levels[1]:(progress<=75?levels[2]:(progress<=100?levels[3]:'-'))))
-						- var iconlevel =(progress<=25?iconLevels[0]:(progress<=50?iconLevels[1]:(progress<=75?iconLevels[2]:(progress<=100?iconLevels[3]:'-'))))
+						- var level =(progress<=40?levels[0]:(progress<=60?levels[1]:(progress<=80?levels[2]:(progress<=100?levels[3]:'-'))))
+						- var iconlevel =(progress<=40?iconLevels[0]:(progress<=60?iconLevels[1]:(progress<=80?iconLevels[2]:(progress<=100?iconLevels[3]:'-'))))
 						.level-box
 							h5 
 								| &mdash;&nbsp;
@@ -97,7 +101,11 @@ block content
 				.row
 					.column.column-100(style='text-align:center; margin:5% 2% 2%;')
 						a(href='/feedback')
-							| SEND FEEDBACK
+							i.icon-thumbs-up
+							| &nbsp;&middot;&nbsp;SEND FEEDBACK
+						br
+						a(href='/', style='display:block; text-align:center; margin-top:10%; font-size:200%; color:#aaa;', title='Back to Home')
+							i.icon-th-large
 
 
 			.column
@@ -109,7 +117,7 @@ block scripts
 			$('.result-val').toggleClass('animated tada');
 		}, 4000);
 
-		setTimeout(()=>{
+		setInterval(()=>{
 			swal({title: 'Isi Feedback', text: 'Bagaimana rasanya soal, suasana selama tes awal atau praktikum sebelumnya?\nAda saran atau kritik? Jangan sampe gak diisi loh! Klik Link "SEND FEEDBACK" di halaman ini.', button: false, icon: '/imgs/mailbox.svg'});
 		}, 60000);
 

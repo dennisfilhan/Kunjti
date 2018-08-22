@@ -24,7 +24,7 @@ block content
 
 		a#backToSection.backToSection(href='javascript:;', style='display:none;', title='Edit Informasi')
 			i.icon-arrow-up
-			| &nbsp;Kembali
+			| &nbsp;Edit
 
 		form(action='', method='post')
 		section#nav.row(style='padding:10px 0;')
@@ -57,7 +57,8 @@ block content
 							//- Modul
 							=quiz.Modul.nama
 					p= quiz.description
-					p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lacus eros, pellentesque nec lectus eget, consectetur gravida turpis. Proin quis fringilla justo. Pellentesque commodo elit sit amet diam finibus, viverra elementum turpis posuere. Mauris eu tristique dui, sit amet gravida est. Proin lacus erat, auctor ut faucibus quis	
+					p 
+						| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lacus eros, pellentesque nec lectus eget, consectetur gravida turpis. Proin quis fringilla justo. Pellentesque commodo elit sit amet diam finibus, viverra elementum turpis posuere. Mauris eu tristique dui, sit amet gravida est. Proin lacus erat, auctor ut faucibus quis	
 					hr
 					.row#passkey
 						.column
@@ -88,21 +89,35 @@ block content
 						form#fill(action='',method='POST')
 							fieldset(style='text-align:left;')
 								label NIM
-									input(name='inim', value='12', type='text', placeholder='')
+								.row
+									.column.column-60
+										input(name='inim', value='12', type='text', placeholder='')
+									.column.column-30
+										button#verify(style='width:98%;', type='button') Verify
+									.column.column-10(style='text-align:center;')
+										i.validnim.icon-ok(style='display:none;color:#9ccc65;font-size:200%;', title='NIM Valid')
+										i.notvalidnim.icon-remove(style='display:none;color:#e57373;font-size:200%;', title='NIM tidak Valid dan Terdaftar')
+										input(type='hidden', name='nim_validation', value='-10')
 								.hidden-field(style='display:none;')
 									label Nama
-										input(name='inama', value='F', type='text', placeholder='')
+										input(name='inama', value='', type='text', placeholder='', autocomplete="off")
 									label Kelas
-										input(name='ikelas', value='S', type='text', placeholder='')
+										input(name='ikelas', value='', type='text', placeholder='', autocomplete="off")
 									label Shift
-										input(name='ishift', value='S', type='text', placeholder='')
+									.row
+										.column.column-20
+											input(name='ishift', value='', type='text', placeholder='', autocomplete="off")
+										.column.column-80
+											span#shift
 									label Posisi
-										input(name='ipos', value='P', type='text', placeholder='')
+										input(name='ipos', value='', type='text', placeholder='', autocomplete="off")
 								.row
 									.column.column-70
-										button#verify(style='width:98%;', type='button') Verify
 										button#start(style='width:98%;display:none;', type='submit') Start
-									.column.column-50
+									.column.column-50(style='text-align:center;')
+										a(href='#verify')
+											| NIM belum terdaftar ?
+										br
 										i.icon-time
 										| &nbsp;&nbsp;Time Limit&nbsp;
 										= (quiz.Quiz.timelimit/60/1000)
@@ -110,7 +125,7 @@ block content
 					.column
 			.column
 
-		section.row#workbench(style='height:95vh;display:none;')
+		section.row#workbench(style='height:95vh;display:none;margin-top:10%;')
 			.column.column-75
 				#document
 					//- iframe#frame(src='/unit/docx/'+quiz.Attachment.filename, frameborder='0', width='100%', style='height:100vh; min-height:380px;')
@@ -128,11 +143,14 @@ block content
 							| &nbsp;&frasl;&nbsp;Shift&nbsp;
 							span#sshift 7
 						input(type='hidden', name='unitid', value= quiz.id)
+						input(type='hidden', name='assignshiftid', value='')
+						input(type='hidden', name='assignunitid', value='')
 						input(type='hidden', name='nim', value='')
 						input(type='hidden', name='nama', value='')
 						input(type='hidden', name='kelas', value='')
 						input(type='hidden', name='shift', value='')
 						input(type='hidden', name='pos', value='')
+						input(type='hidden', name='timeLapse', value='')
 						div#multiplebox(style='text-align:center;')
 						- var qMax=quiz.Quiz.jumlah_soal;
 						- for(i=0; i<qMax; i++)
@@ -157,10 +175,11 @@ block content
 								i.icon-time
 								| &nbsp;
 								span#countdown_timer 00:00:00
-								input(type='hidden', id='seconds', value= ((quiz.Quiz.timelimit/1000)) )
+	input(type='hidden', id='seconds', value= ((quiz.Quiz.timelimit/1000)) )
 
 block scripts
 	script(type='text/javascript', src='/javascripts/easytimer.min.js')
+	script(type='text/javascript', src='/javascripts/jquery.cookie.min.js')
 
 	script.
 		$(document).ready(()=>{
@@ -179,11 +198,15 @@ block scripts
 		var preloader1=$('#preloader1');
 		console.log(unlock.attr('action'));
 		var userBlock=$('#user');
+
+		//- 
+		//- ACTION UNLOCK FORM
+		//- 
 		unlock.bind('submit', (e)=>{
 			e.preventDefault();
 			preloader1.show();
 			$.post(unlock.attr('action'), {password: txtUnlock.val()}, (result,stat,type)=>{
-				console.log(result);
+				//- console.log(result);
 				preloader1.hide();
 				return result;
 			})
@@ -193,7 +216,8 @@ block scripts
 				userBlock.show();
 				scrollToE(userBlock);
 				frame.html(d);
-				console.log(d);
+				//- console.log(d);
+				//- $('title').html("Fill your Information");
 			})
 			.fail((f)=>{
 				preloader1.hide();
@@ -202,6 +226,10 @@ block scripts
 			;
 		});
 
+		
+		//- 
+		//- ACTION CLICK RADIO
+		//- 
 		var rowChoice = $('.multiplebox');
 		var radioChoiceBtn = $('.radio-option');
 			radioChoiceBtn.bind('change', (e)=>{
@@ -209,19 +237,91 @@ block scripts
 				var r = $(e.target);
 				r.parents('.multiplebox').find('.radio-label').removeClass('active');
 				r.parents('.radio-pretty').find('.radio-label').addClass('active');
+
+				saveAnswerForm();
 			});
 		
+
+		//- 
+		//- ACTION BUTTON VIRIFY
+		//- 
+		var nim=$('input[name=inim]');
+			$(nim).bind('change',(e)=>{
+				if(nim.val()!=$('input[nama=inim]').val()){
+					console.log('NIM NOT MATCH');
+				}
+			});
+
 			$('#verify').bind('click',(e)=>{
 				e.preventDefault();
-				$(e.target).fadeOut(1000, ()=>{
-					$('input[name=inim]').attr('readonly', true);
-					$('.hidden-field').slideDown(1000);
-					$('#start').fadeIn();
+
+				nim.removeClass('animated shake');
+				
+				$.post('/unit/user/',{praktikan: nim.val(), shift: $('[name=ishift]').val()},(res,status)=>{
+					if(res.status===1){
+						//- console.log(res);
+						console.log((res.data.Praktikan.id));
+						$('input[name=assignshiftid]').val((res.data.id));
+						$('input[name=inim]').val((res.data.Praktikan.id));
+						$('input[name=inama]').val(res.data.Praktikan.nama);
+						$('input[name=ikelas]').val(res.data.Praktikan.kelas);
+						$('input[name=ishift]').val(res.data.Shift.id);
+						$('input[name=nim_validation]').val(1);
+						$('#shift').text(res.data.Shift.everyday+' '+res.data.Shift.location+' '+res.data.Shift.time_in);
+
+						if($('.notvalidnim').is(':visible')){$('.notvalidnim').hide();}
+						$('.validnim').fadeIn();
+						//- $('input[name=pos]').val();
+						//- $(e.target).fadeOut(1000, ()=>{
+							//- $('input[name=inim]').attr('readonly', true);
+							//- $('.hidden-field').slideDown(1000);
+							$('.hidden-field').slideDown(1000);
+							$('#start').fadeIn();
+							saveAnswerForm();
+						//- });
+
+					}else{
+						resetHiddenField();
+						if($('.validnim').is(':visible')){$('.validnim').hide();}
+						//- swal({title: 'Ooops... ', text: 'NIM not found, try some action.', icon:'warning',button:false});
+						nim.toggleClass('animated shake');
+						swal({title: 'ID Error', text:'NIM tidak terdaftar dalam shift unit terkait.\n"Retry" untuk input ulang NIM Valid.\n"Continue" untuk melanjutkan tanpa validasi.', buttons:['Retry','Continue']})
+							.then((val)=>{
+								if(val!=null){
+									$('.notvalidnim').fadeIn();
+									$('input[name=nim_validation]').val(0);
+									$('.hidden-field').slideDown(1000);
+									$('#start').fadeIn();
+								}
+							})
+							;
+					}
+				}).catch((ex)=>{
+					swal({title: 'Ooops... ', text: 'Something went wrong.', icon:'error',button:false});
 				});
 				//console.log('user info set');
 			});
 
-			var answerform = $('#answerform');
+		function resetHiddenField(){
+			$('input[name=assignshiftid]').val("");
+			//- $('input[name=inim]').val("");
+			$('input[name=inama]').val("");
+			$('input[name=ikelas]').val("");
+			$('input[name=ishift]').val("");
+			$('#shift').text("");
+			$('input[name=nim_validation]').val(-10);
+		}
+
+
+		//- 
+		//- ACTION JIKA DIUPDATE
+		//- 
+		
+
+		//- 
+		//- ACTION BUTTON FINISH
+		//- 
+		var answerform = $('#answerform');
 			$('#btnFinish').on('click',(e)=>{
 				e.preventDefault();
 				swal({
@@ -237,30 +337,99 @@ block scripts
 					});
 			});
 
-			var workbench =$('#workbench');
-			$('#start').bind('click',(e)=>{
+		
+		//- 
+		//- ACTION BUTTON START
+		//- 
+		var startIsBegin = false;
+		var workbench =$('#workbench');
+			$('#fill').on('submit',(e)=>{
 				e.preventDefault();
+				if($('input[name=nim_validation]').val()==-10){swal({title: 'Verify First', text:'Masukkan NIM Valid', button:false, icon:'error'}); return;}
+
+				//- if($('input[name=nim]').val()!='' && $('input[name=inim]').val()!=$('input[name=nim]').val()){console.log('nim changes'); return;}
+
 				fillA();
-				workbench.show();
-				workbench.height(answerform.height());
-				//- console.log(workbench.height());
-				$('#start').text('Update');
-				scrollToE(workbench);
-				timerStart();
-				setTimeout(()=>{
-					makeToggle()
-				},2000);
+				//- if($('input[name=nim_validation]').val()==0){$('input[name=assignshiftid]').val(''); console.log('nim not valid');}
+
+				//- INSERT TO UNIT ASSIGN
+				swal({title: "Attention Please", icon:'warning',text:"Setelah menekan tombol lanjutkan WAKTU dan NIM akan tercatat dalam daftar untuk mengikuti agenda, tidak dapat mengulang kambali.\nPastikan seluruh data yang diinput BENAR.",dangerMode:true,
+					buttons: ['Batalkan','Saya mengerti, Lanjutkan']
+				})
+				.then((val)=>{
+					if(val!=null){
+						var assignshift = $('input[name=assignshiftid]').val()
+						if($('input[name=nim_validation]').val()==0){assignshift=-100; console.log('nim not valid'); }
+						if($('#start').text().toLowerCase()==('Update').toLowerCase()){
+							swal({title: '500', text: 'EDIT DATA NOT READY YET', icon:'error',button:false});
+							console.log('edit data');
+							workbench.show();
+							scrollToE(workbench);
+							return;
+						}
+						$.post('/unit/start',
+						{
+							praktikan: $('input[name=nim]').val(), 
+							unitId: $('input[name=unitid]').val(), 
+							shiftId: $('input[name=shift]').val(),
+							shiftAssignId: assignshift
+						},
+						(res,stat)=>{
+							$('input[name=assignunitid]').val(res.data.id);
+							workbench.show();
+							workbench.height(answerform.height());
+							//- console.log(workbench.height());
+							$('#start').text('Update');
+							scrollToE(workbench);
+							if(startIsBegin!=true){timerStart();}
+							setTimeout(()=>{makeToggle()},2000);
+
+							//- console.log(res);
+						})
+						.fail((ex)=>{
+							var error_message = ex.responseJSON.exceptions.original.sqlMessage;
+							var error_desc = (error_message.includes('Duplicate'))?error_message+"\nSudah melakukan Unit Asssigned":error_message;
+							swal({title: ex.status, text: error_desc, icon:'error',button:false});
+							console.log(ex);
+						});
+					}
+				})
+				;
+				
 			});
 
-			var btnBackToSection = $('#backToSection');
+		
+		//- 
+		//- ACTION BTN BACK TO FORM 2
+		//- 
+		var btnBackToSection = $('#backToSection');
 			btnBackToSection.on('click', (e)=>{
 				e.preventDefault();
 				if(workbench.is(':visible')){
 					scrollToE(userBlock);
 					workbench.toggle();
+					//- $('#verify').show();
+					//- $('#start').hide();
 					makeToggle();
 				}
 			});
+
+		$.cookie.json = true;
+		function saveAnswerForm(){
+			var d = new Date();
+			d.setTime(d.getTime() + 10*60*1000);
+			var dd=d.toGMTString();
+			var data=JSON.stringify(answerform.serializeArray());
+			//- console.log(data);
+			//- console.log(dd);
+			//- if($.cookie('quizsaveme_expires')!=null){d=$.cookie('quizsaveme_expires');}
+			//- //- document.cookie = 'quizsaveme_expires='+dd+'; Expires='+dd;
+			//- //- document.cookie = 'quizsaveme_data='+JSON.stringify(answerform.data())+'; Expires='+dd;
+			//- $.cookie("quizsaveme_expires", d, {expires: 1});
+			//- $.cookie("quizsaveme_data", JSON.stringify(answerform.data()), {expires: 1});
+
+			//- console.log(JSON.parse(data));
+		}
 
 		function makeToggle(){
 			passBlock.toggle();
@@ -269,8 +438,10 @@ block scripts
 		}
 		
 		function timerStart(){
+			startIsBegin=true;
 			var ele = $('#countdown_timer');
 			var timer = new Timer();
+			var tcounter = new Timer();
 			var time=parseInt($('#seconds').val());
 			timer.start({countdown: true, startValues: {seconds: time}});
 			ele.html(timer.getTimeValues().toString());
@@ -279,6 +450,12 @@ block scripts
 			});
 			timer.addEventListener('targetAchieved', function (e) {
 			   autoSubmit();
+			});
+			var tele = $('[name=timeLapse]');
+			tcounter.start();
+			tele.html(tcounter.getTotalTimeValues().toString());
+			tcounter.addEventListener('secondsUpdated', function (e) {
+			    tele.val(tcounter.getTotalTimeValues().seconds);
 			});
 		}
 
